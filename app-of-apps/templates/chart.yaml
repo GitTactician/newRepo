@@ -1,2 +1,2 @@
 # prettier-ignore
-{{- include "application" . -}}
+{{- include "chart" . -}}
