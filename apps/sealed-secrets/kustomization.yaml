@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-resources:
-  # HIGHLIGHT
-  - ../../charts/sealed-secrets
+generators:
+  # Diese Datei erzeugt alle Manifest-Dateien aus dem lokalen Helm-Chart
+  - sealed-secrets-chart.yaml
 # patches:
   # HIGHLIGHT
   # - path: deployment-patch.yaml
