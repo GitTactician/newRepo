@@ -11,4 +11,4 @@ spec:
 # HIGHLIGHT
 applications:
   - name: argocd
-  - name: sealed_secrets
+  - name: sealed-secrets
