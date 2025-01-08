@@ -1,5 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 resources:
-  # HIGHLIGHT
-  - ../../apps/argocd
+- argocd.yaml
+
+patches:
+- patch: |-
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: argocd-cm
+    data:
+      # we use annotations for tracking ownership because this avoids certain compatibility problems
+      application.resourceTrackingMethod: annotation
+
+namespace: argocd
