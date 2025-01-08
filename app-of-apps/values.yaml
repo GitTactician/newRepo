@@ -4,7 +4,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     # HIGHLIGHT
-    repoURL: ${GITOPS_REPO_URL_ARGOCD}
+    repoURL: git@ssh.dev.azure.com:v3/cbtw/DevOps/argocd_app_of_apps
     # HIGHLIGHT
     targetRevision: main
 

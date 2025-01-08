@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc 
+  source:
+    repoURL: git@ssh.dev.azure.com:v3/cbtw/DevOps/argocd_app_of_apps
+    targetRevision: main
+    path: app-of-apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
