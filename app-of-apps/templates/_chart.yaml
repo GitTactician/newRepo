@@ -13,6 +13,7 @@ spec:
   project: default
   destination:
     server: {{ $root.Values.spec.destination.server }}
+    namespace: {{ $chart.namespace }}
   source:
     helm:
       releaseName: {{  $chart.name }}

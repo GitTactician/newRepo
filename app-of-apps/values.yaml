@@ -11,6 +11,8 @@ spec:
 # HIGHLIGHT
 applications:
   - name: argocd
+    namespace: argocd
 
 charts:
   - name: sealed-secrets
+    namespace: kube-system
