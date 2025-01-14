@@ -1,11 +1,7 @@
 {{- range .Values.applications }}
 {{- $appPath := printf "apps/%s" .name }}
-
-{{- $isHelm := (.Files.Glob (printf "%s/Chart.yaml" $appPath)) }}
-
-{{- if not $isHelm }}
-  {{- $isHelm = false }}
-{{- end }}
+{{- $helmChartPath := printf "apps/%s/Chart.yaml" .name }}
+{{- $hasHelmChart := (fileExists $helmChartPath) }}
 
 ---
 apiVersion: argoproj.io/v1alpha1
