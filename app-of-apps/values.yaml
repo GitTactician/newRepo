@@ -17,3 +17,7 @@ applications:
   - name: nginx-ingress
     namespace: nginx-ingress
     helm: false
+
+  - name: nginx-ingress
+    namespace: nginx-ingress
+    helm: false
