@@ -13,3 +13,7 @@ applications:
   - name: sealed-secrets
     namespace: kube-system
     helm: true
+
+  - name: nginx-ingress
+    namespace: nginx-ingress
+    helm: false
