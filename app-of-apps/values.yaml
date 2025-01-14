@@ -18,6 +18,6 @@ applications:
     namespace: nginx-ingress
     helm: false
 
-  - name: nginx-ingress
-    namespace: nginx-ingress
+  - name: cert-manager
+    namespace: cert-manager
     helm: false
