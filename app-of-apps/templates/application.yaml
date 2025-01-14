@@ -2,7 +2,7 @@
 {{- $appPath := printf "apps/%s" .name }}
 
 {{- $isHelm := .Files.Glob "%s/Chart.yaml"}}
-
+{{- if $isHelm }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -32,4 +32,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+{{- end }}
 {{- end }}
