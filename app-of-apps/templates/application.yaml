@@ -1,7 +1,7 @@
 {{- range .Values.applications }}
 {{- $appPath := printf "apps/%s" .name }}
 
-{{- $isHelm := (and (.Files.Glob "%s/Chart.yaml") (.Files.Glob "%s/templates" )) }}
+{{- $isHelm := .Files.Glob "%s/Chart.yaml"}}
 
 ---
 apiVersion: argoproj.io/v1alpha1
