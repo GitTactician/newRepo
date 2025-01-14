@@ -6,6 +6,7 @@
   {{- $isHelm := false }}
   {{- with .Files.Get $chartPath }}
     {{- $isHelm := true }}
+  {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
