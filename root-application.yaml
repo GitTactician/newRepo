@@ -10,7 +10,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc 
   source:
-    repoURL: git@ssh.dev.azure.com:v3/cbtw/DevOps/argocd_app_of_apps
+    repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
     path: app-of-apps
   syncPolicy:
