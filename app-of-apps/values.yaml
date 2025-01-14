@@ -1,18 +1,15 @@
 spec:
   destination:
-    # HIGHLIGHT
     server: https://kubernetes.default.svc
   source:
-    # HIGHLIGHT
     repoURL: https://github.com/GitTactician/app-of-apps
-    # HIGHLIGHT
     targetRevision: main
 
-# HIGHLIGHT
 applications:
   - name: argocd
     namespace: argocd
+    helm: false
 
-charts:
   - name: sealed-secrets
     namespace: kube-system
+    helm: true

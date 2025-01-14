@@ -1,2 +1,31 @@
-# prettier-ignore
-{{- include "application" . -}}
+{{- range .Values.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: {{ $.Values.spec.destination.server }}
+    namespace: {{ .namespace }}
+  source:
+    {{- if .helm }}
+    helm:
+      releaseName: {{ .name }}
+    repoURL: {{ $.Values.spec.source.repoURL }}
+    targetRevision: {{ $.Values.spec.source.targetRevision }}
+    path: charts/{{ .name }}
+    {{- else }}
+    repoURL: {{ $.Values.spec.source.repoURL }}
+    targetRevision: {{ $.Values.spec.source.targetRevision }}
+    path: apps/{{ .name }}
+    {{- end }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}
