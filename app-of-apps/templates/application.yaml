@@ -1,13 +1,13 @@
 {{- range .Values.applications }}
-  {{- $appPath := printf "app-of-apps/apps/%s" .name }}
-  {{- $helmPath := printf "apps/%s/Chart.yaml" .name }}
-  {{- $isHelm := false }}
+  {{- $appPath := printf "apps/%s" .name }}
+  {{- $helmChartPath := printf "apps/%s/charts/Chart.yaml" .name }}
+  {{- $chartFile := try (.Files.Get $helmChartPath) nil }}
 
-  # Check if Chart.yaml exists in the app folder by path
-  {{- if .Files.Get $helmPath --debug }}
-    {{- $isHelm = true }}
+  # Check if the Chart.yaml file exists (if not, $chartFile will be nil)
+  {{- $hasHelmChart := false }}
+  {{- if $chartFile }}
+    {{- $hasHelmChart = true }}
   {{- end }}
-
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
