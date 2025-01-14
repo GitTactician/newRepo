@@ -21,3 +21,7 @@ applications:
   - name: cert-manager
     namespace: cert-manager
     helm: false
+
+  - name: apache-httpd
+    namespace: apache-httpd
+    helm: true
