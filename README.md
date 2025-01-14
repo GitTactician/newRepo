@@ -10,27 +10,27 @@ This repository demonstrates the "App of Apps" pattern using ArgoCD. The "App of
 
 ## Repository Structure
 
-app-of-apps/ 
-|_ .helmignore 
-|_ Chart.yaml 
-|_ templates/ 
-|   |_ _application.yaml 
-|   |_ _chart.yaml 
-|   |_ application.yaml 
-|   |_ chart.yaml 
-|_ values.yaml 
-apps/ 
-|_ argocd/ 
-|   |_ argocd.yaml 
-|   |_ kustomization.yaml 
-|_ charts/ 
-|   |_ sealed-secrets/ 
-|   |   |_ .helmignore 
-|   |   |_ Chart.lock 
-|   |   |_ Chart.yaml 
-|   |   |_ charts/ 
-|   |   |   |_ sealed-secrets-2.12.0.tgz 
-|   |   |_ values.yaml 
+app-of-apps/
+|_ .helmignore
+|_ Chart.yaml
+|_ templates/
+| |_ _application.yaml
+| |_ _chart.yaml
+| |_ application.yaml
+| |_ chart.yaml
+|_ values.yaml
+apps/
+|_ argocd/
+| |_ argocd.yaml
+| |_ kustomization.yaml
+|_ charts/
+| |_ sealed-secrets/
+| | |_ .helmignore
+| | |_ Chart.lock
+| | |_ Chart.yaml
+| | |_ charts/
+| | | |_ sealed-secrets-2.12.0.tgz
+| | |_ values.yaml
 |_ root-application.yaml
 
 ### Main Components
@@ -65,7 +65,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
   source:
-    repoURL: git@ssh.dev.azure.com:v3/cbtw/DevOps/argocd_app_of_apps
+    repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
 
 applications:
@@ -77,8 +77,8 @@ charts:
     namespace: kube-system
 ```
 
-
 ## ArgoCD
+
 The root-application.yaml file defines the root ArgoCD Application resource that points to the app-of-apps chart:
 
 ```yaml
@@ -92,9 +92,9 @@ metadata:
 spec:
   project: default
   destination:
-    server: https://kubernetes.default.svc 
+    server: https://kubernetes.default.svc
   source:
-    repoURL: git@ssh.dev.azure.com:v3/cbtw/DevOps/argocd_app_of_apps
+    repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
     path: app-of-apps
   syncPolicy:
@@ -110,13 +110,13 @@ spec:
 - `overlays/`: Contains the overlay manifests for different environments (e.g., dev, prod).
 
 ## Usage
+
 1. Install ArgoCD: Follow the ArgoCD installation guide to install ArgoCD in your Kubernetes cluster.
 
-2. Deploy the Root Application: Apply the root-application.yaml file to create the root ArgoCD Application resource: 
+2. Deploy the Root Application: Apply the root-application.yaml file to create the root ArgoCD Application resource:
 
 ```bash
 kubectl apply -f root-application.yaml
 ```
 
 3. Monitor the Deployment: Use the ArgoCD UI or CLI to monitor the deployment of the applications and charts defined in the app-of-apps chart.
-
