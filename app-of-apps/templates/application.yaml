@@ -3,11 +3,9 @@
   {{- $chartPath := printf "apps/%s/charts/Chart.yaml" .name }}
 
   # Attempt to get the Chart.yaml file content
+  {{- $isHelm := false }}
   {{- with .Files.Get $chartPath }}
     {{- $isHelm := true }}
-  {{- else }}
-    {{- $isHelm := false }}
-  {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
