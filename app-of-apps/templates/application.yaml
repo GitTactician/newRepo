@@ -1,4 +1,8 @@
 {{- range .Values.applications }}
+{{- $appPath := printf "apps/%s" .name }}
+
+{{- $isHelm := (and (fileExists (printf "%s/Chart.yaml" $appPath)) (fileExists (printf "%s/templates" $appPath))) }}
+
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -13,16 +17,16 @@ spec:
     server: {{ $.Values.spec.destination.server }}
     namespace: {{ .namespace }}
   source:
-    {{- if .helm }}
+    {{- if $isHelm }}
     helm:
       releaseName: {{ .name }}
     repoURL: {{ $.Values.spec.source.repoURL }}
     targetRevision: {{ $.Values.spec.source.targetRevision }}
-    path: charts/{{ .name }}
+    path: {{ $appPath }}
     {{- else }}
     repoURL: {{ $.Values.spec.source.repoURL }}
     targetRevision: {{ $.Values.spec.source.targetRevision }}
-    path: apps/{{ .name }}
+    path: {{ $appPath }}
     {{- end }}
   syncPolicy:
     automated:

@@ -8,20 +8,15 @@ spec:
 applications:
   - name: argocd
     namespace: argocd
-    helm: false
 
   - name: sealed-secrets
     namespace: kube-system
-    helm: true
 
   - name: nginx-ingress
     namespace: nginx-ingress
-    helm: false
 
   - name: cert-manager
     namespace: cert-manager
-    helm: false
 
   - name: apache-httpd
     namespace: apache-httpd
-    helm: true
