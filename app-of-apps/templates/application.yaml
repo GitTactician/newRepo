@@ -4,9 +4,9 @@
 
   # Attempt to get the Chart.yaml file content
   {{- with .Files.Get $chartPath }}
-    {{- $hasHelmChart := true }}
+    {{- $isHelm := true }}
   {{- else }}
-    {{- $hasHelmChart := false }}
+    {{- $isHelm := false }}
   {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
