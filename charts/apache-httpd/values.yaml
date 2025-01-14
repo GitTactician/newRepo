@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: httpd
+  pullPolicy: IfNotPresent
+  tag: "2.4"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+resources: {}
