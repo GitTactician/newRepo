@@ -1,11 +1,11 @@
 {{- range .Values.applications }}
   {{- $appPath := printf "apps/%s" .name }}
   {{- $helmPath := printf "apps/%s/Chart.yaml" .name }}
-  {{- $hasHelmChart := false }}
+  {{- $isHelm := false }}
 
   # Check if Chart.yaml exists in the app folder by path
   {{- if .Files.Get $helmPath }}
-    {{- $hasHelmChart = true }}
+    {{- $isHelm = true }}
   {{- end }}
 
 ---
