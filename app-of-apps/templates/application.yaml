@@ -2,7 +2,7 @@
 {{- $appPath := printf "apps/%s" .name }}
 
 {{- $isHelm := false }}
-{{- if isFile printf("%s./myfile" .name) }}
+{{- if isFile printf("%s./chart.yaml" .name) }}
 {{- $isHelm = true }}
 {{- end }})}}
 ---
