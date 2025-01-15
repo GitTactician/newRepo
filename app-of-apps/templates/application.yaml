@@ -1,12 +1,8 @@
 {{- range .Values.applications }}
   {{- $appPath := printf "apps/%s" .name }}
-  {{- $chartPath := printf "apps/%s/charts/Chart.yaml" .name }}
-
-  # Attempt to get the Chart.yaml file content
-  {{- $isHelm := false }}
-  {{- with .Files.Get $chartPath }}
-    {{- $isHelm := true }}
-  {{- end }}
+  
+  # get ishelm value from values.yaml
+  {{- $isHelm := .helm }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
