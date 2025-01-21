@@ -1,76 +1,52 @@
-{{- range .Values.applications }}
-  # Determine appPath with fallback
-  {{- $basePath := .appPath }}
-  {{- if not $basePath }}
-    {{- $basePath = "apps" }}
-  {{- end }}
-  {{- $appPath := printf "%s/%s" $basePath .name }}
-
-  # Handle Helm configuration and other parameters
-  {{- $isHelm := .helm }}
-  {{- $repoURL := .repoUrl }}
-  {{- if not $repoURL }}
-    {{- $repoURL = $.Values.spec.source.repoURL }}
-  {{- end }}
-  {{- $targetRevision := .targetRevision }}
-  {{- if not $targetRevision }}
-    {{- $targetRevision = $.Values.spec.source.targetRevision }}
-  {{- end }}
-
-  # Handle syncPolicy with fallback
-  {{- $syncPolicy := .syncPolicy }}
-  {{- if not $syncPolicy }}
-    {{- $syncPolicy = $.Values.spec.syncPolicy }}
-  {{- end }}
-
-  {{- $prune := .prune }}
-  {{- if not $prune }}
-    {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
-  {{- end }}
-
-  {{- $selfHeal := .selfHeal }}
-  {{- if not $selfHeal }}
-    {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
-  {{- end }}
-
-  {{- $createNamespace := .createNamespace }}
-  {{- if not $createNamespace }}
-    {{- $createNamespace = $.Values.spec.createNamespace }}
-  {{- end }}
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: {{ .name }}
-  namespace: argocd
 spec:
-  project: default
   destination:
-    server: {{ $.Values.spec.destination.server }}
-    namespace: {{ .namespace }}
+    server: https://kubernetes.default.svc
   source:
-    repoURL: {{ $repoURL }}
-    targetRevision: {{ $targetRevision }}
-    path: {{ $appPath }}
-    {{- if $isHelm }}
-    helm:
-      releaseName: {{ .name }}
-    {{- end }}
-  
-  {{- if $syncPolicy }}
+    repoURL: https://github.com/GitTactician/app-of-apps
+    targetRevision: main
+  createNamespace: true
   syncPolicy:
     automated:
-      {{- if $prune }}
-      prune: {{ $prune }}
-      {{- end }}
-      {{- if $selfHeal }}
-      selfHeal: {{ $selfHeal }}
-      {{- end }}
-    {{- if $createNamespace }}
-    syncOptions:
-      - CreateNamespace=true
-    {{- end }}
-  {{- else }}
-  syncPolicy: {}
-  {{- end }}
-{{- end }}
+      prune: true
+      selfHeal: false
+
+applications:
+  - name: sealed-secrets
+    namespace: kube-system
+    helm: true
+    appPath: apps/sealed-secrets
+    targetRevision: v1.0.0
+    syncPolicy: true
+    prune: true
+    selfHeal: true
+    createNamespace: false
+
+  - name: nginx-ingress
+    namespace: nginx-ingress
+    helm: false
+    appPath: apps/nginx-ingress
+    targetRevision: v2.1.0
+    syncPolicy: false
+    prune: false
+    selfHeal: false
+    createNamespace: true
+
+  - name: cert-manager
+    namespace: cert-manager
+    helm: true
+    appPath: apps/cert-manager
+    targetRevision: v3.2.0
+    syncPolicy: true
+    prune: true
+    selfHeal: false
+    createNamespace: true
+
+  - name: apache-httpd
+    namespace: apache-httpd
+    helm: false
+    appPath: apps/apache-httpd
+    targetRevision: main
+    syncPolicy: false
+    prune: true
+    selfHeal: true
+    createNamespace: false
