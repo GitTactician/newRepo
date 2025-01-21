@@ -6,9 +6,6 @@ spec:
     targetRevision: main
 
 applications:
-  - name: argocd
-    namespace: argocd
-    helm: false
 
   - name: sealed-secrets
     namespace: kube-system
