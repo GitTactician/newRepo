@@ -21,6 +21,10 @@
   {{- if not $syncPolicy }}
     {{- $syncPolicy = $.Values.spec.syncPolicy }}
   {{- end }}
+  {{ $createNamespace := .createNamespace }}
+  {{- if not $createNamespace }}
+    {{- $createNamespace = $.Values.spec.createNamespace }}
+  {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -45,8 +49,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    {{- if $createNamespace }}
   syncOptions:
     - CreateNamespace=true
+    {{- end }}
   {{- end}}
   {{- if not $syncPolicy }}
   syncPolicy: {}
