@@ -51,7 +51,7 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-    {{- if $isHelm eq true }}
+    {{- if $isHelm }}
     helm:
       releaseName: {{ .name }}
     {{- end }}

@@ -8,8 +8,9 @@ spec:
   # Global syncPolicy and namespace creation settings (optional)
   syncPolicy:
     automated:
-      prune:
-      selfHeal:
+      prune: true
+      selfHeal: true
+  createNamespace: false  # Set to true if namespaces need to be automatically created
 
 applications:
   - name: sealed-secrets
