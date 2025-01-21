@@ -1,13 +1,45 @@
 {{- range .Values.applications }}
   # Define default values and allow overrides
-  {{- $basePath := .path | default "apps" }}
+
+  {{- $basePath := .path }}
+  {{- if not $basePath }}
+    {{- $basePath = "apps" }}
+  {{- end }}
   {{- $appPath := printf "%s/%s" $basePath .name }}
-  {{- $appRepoURL := .repoURL | default $.Values.spec.source.repoURL }}
-  {{- $appTargetRevision := (.targetRevision | default $.Values.spec.source.targetRevision | default "main") }}
-  {{- $appSyncAutomated := (.syncPolicy.automated | default $.Values.spec.syncPolicy.automated | default false) }}
-  {{- $appSyncPrune := (.syncPolicy.prune | default $.Values.spec.syncPolicy.prune | default false) }}
-  {{- $appSyncSelfHeal := (.syncPolicy.selfHeal | default $.Values.spec.syncPolicy.selfHeal | default false) }}
-  {{- $appNamespaceCreation := (.namespaceCreation | default $.Values.spec.namespaceCreation | default false) }}
+  
+  {{- $appRepoURL := .repoURL }}
+  {{- if not $appRepoURL }}
+    {{- $appRepoURL = $.Values.spec.source.repoURL }}
+  {{- end }}
+  
+  {{- if .targetRevision }}
+    {{- $appTargetRevision := .targetRevision }}
+  {{- else }}
+    {{- if $.Values.spec.source.targetRevision }}
+      {{- $appTargetRevision := $.Values.spec.source.targetRevision }}
+    {{- else }}
+      {{- $appTargetRevision := "main" }}
+    {{- end }}
+  {{- end }}
+
+  {{- if .syncPolicy }}
+    {{- if .syncPolicy.automated }}
+      {{- $appSyncAutomated := .syncPolicy.automated }}
+    {{- else }}
+      {{- $appSyncAutomated := $.Values.spec.syncPolicy.automated | default false }}
+    {{- end }}
+    {{- $appSyncPrune := .syncPolicy.prune | default $.Values.spec.syncPolicy.prune | default false }}
+    {{- $appSyncSelfHeal := .syncPolicy.selfHeal | default $.Values.spec.syncPolicy.selfHeal | default false }}
+  {{- else }}
+    {{- $appSyncAutomated := $.Values.spec.syncPolicy.automated | default false }}
+    {{- $appSyncPrune := $.Values.spec.syncPolicy.prune | default false }}
+    {{- $appSyncSelfHeal := $.Values.spec.syncPolicy.selfHeal | default false }}
+  {{- end }}
+  
+  {{- $appNamespaceCreation := .namespaceCreation }}
+  {{- if not $appNamespaceCreation }}
+    {{- $appNamespaceCreation = $.Values.spec.namespaceCreation | default false }}
+  {{- end }}
 
 ---
 apiVersion: argoproj.io/v1alpha1
