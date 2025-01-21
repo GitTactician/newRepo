@@ -20,6 +20,7 @@ applications:
   
   - name: nginx-ingress
     namespace: nginx-ingress
+    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
     syncPolicy: true  # Optional: Override global syncPolicy settings per app
     prune: false            # Optional: Override syncPolicy settings per app
     createNamespace: true  # Optional: Override namespace creation setting for this app
@@ -35,6 +36,5 @@ applications:
     createNamespace: true   # Optional: Override namespace creation setting for this app
 
   - name: metrics-server
-    namespace: metrics-server
+    namespace: kube-system
     repoURL: https://dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-    
