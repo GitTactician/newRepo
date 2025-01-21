@@ -14,13 +14,11 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    helm: true
     syncPolicy: true  # Optional: Override global syncPolicy settings per app
 
   
   - name: nginx
     namespace: ingress-nginx
-    helm: true
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
     syncPolicy: true  # Optional: Override global syncPolicy settings per app
     prune: false            # Optional: Override syncPolicy settings per app
@@ -31,7 +29,6 @@ applications:
     
   - name: apache-httpd
     namespace: apache-httpd
-    helm: true
     prune: true             # Optional: Override syncPolicy settings per app
     selfHeal: true          # Optional: Override syncPolicy settings per app
     createNamespace: true   # Optional: Override namespace creation setting for this app
