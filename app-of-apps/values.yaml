@@ -19,7 +19,7 @@ applications:
 
   
   - name: nginx-ingress
-    namespace: nginx-ingress
+    namespace: ingress-nginx
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
     syncPolicy: true  # Optional: Override global syncPolicy settings per app
     prune: false            # Optional: Override syncPolicy settings per app
