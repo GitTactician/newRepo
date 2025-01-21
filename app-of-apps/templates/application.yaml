@@ -16,14 +16,20 @@
   {{- if not $targetRevision }}
     {{- $targetRevision = $.Values.spec.source.targetRevision }}
   {{- end }}
+  # Handle syncPolicy with fallback
+  {{- $syncPolicy := .syncPolicy }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = $.Values.spec.syncPolicy }}
+  {{- end }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = "false" }}
+  {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .name }}
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   destination:
@@ -37,10 +43,16 @@ spec:
     helm:
       releaseName: {{ .name }}
     {{- end }}
+  {{- if eq $syncPolicy == "true" }}
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
   syncOptions:
     - CreateNamespace=true
+  # else
+  {{- else}}
+  syncPolicy: {}
+  {{- end}}
+  {{- end }}
 {{- end }}
