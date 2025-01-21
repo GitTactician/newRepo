@@ -16,25 +16,29 @@
   {{- if not $targetRevision }}
     {{- $targetRevision = $.Values.spec.source.targetRevision }}
   {{- end }}
+
   # Handle syncPolicy with fallback
   {{- $syncPolicy := .syncPolicy }}
   {{- if not $syncPolicy }}
     {{- $syncPolicy = $.Values.spec.syncPolicy }}
   {{- end }}
 
+  # Prune default logic: If prune is not set, default to false
   {{- $prune := .prune }}
   {{- if not $prune }}
-    {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
+    {{- $prune = false }}
   {{- end }}
 
+  # SelfHeal default logic: If selfHeal is not set, default to false
   {{- $selfHeal := .selfHeal }}
   {{- if not $selfHeal }}
-    {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
+    {{- $selfHeal = false }}
   {{- end }}
 
-  {{ $createNamespace := .createNamespace }}
+  # CreateNamespace default logic: If createNamespace is not set, default to false
+  {{- $createNamespace := .createNamespace }}
   {{- if not $createNamespace }}
-    {{- $createNamespace = $.Values.spec.createNamespace }}
+    {{- $createNamespace = false }}
   {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -55,30 +59,21 @@ spec:
     helm:
       releaseName: {{ .name }}
     {{- end }}
-  {{- if $syncPolicy}}
+  
+  {{- if $syncPolicy }}
   syncPolicy:
-    {{- if not $prune and not $selfHeal }}
-    automated: {}
-    {{- end }}
-    {{- if $prune and not $selfHeal }}
     automated:
-        prune: {{ $prune }}
-    {{- end }}
-    {{- if not $prune and $selfHeal }}
-    automated:
-        selfHeal: {{ $selfHeal }}
-    {{- end }}
-    {{- if $prune and $selfHeal }}
-    automated:
-        prune: {{ $prune }}
-        selfHeal: {{ $selfHeal }}
-    {{- end }}
+      {{- if $prune }}
+      prune: {{ $prune }}
+      {{- end }}
+      {{- if $selfHeal }}
+      selfHeal: {{ $selfHeal }}
+      {{- end }}
     {{- if $createNamespace }}
-  syncOptions:
-    - CreateNamespace=true
+    syncOptions:
+      - CreateNamespace=true
     {{- end }}
-  {{- end}}
-  {{- if not $syncPolicy }}
+  {{- else }}
   syncPolicy: {}
   {{- end }}
 {{- end }}
