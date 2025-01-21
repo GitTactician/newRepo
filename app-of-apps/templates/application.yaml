@@ -13,7 +13,7 @@
   {{- end }}
 
   # Handle repoURL with fallback
-  {{- $repoURL := .repoUrl }}
+  {{- $repoURL := .repoURL }}
   {{- if not $repoURL }}
     {{- $repoURL = $.Values.spec.source.repoURL }}
   {{- end }}
