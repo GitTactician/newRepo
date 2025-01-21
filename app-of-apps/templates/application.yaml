@@ -16,7 +16,6 @@
   {{- if not $targetRevision }}
     {{- $targetRevision = $.Values.spec.source.targetRevision }}
   {{- end }}
-
   # Handle syncPolicy with fallback
   {{- $syncPolicy := .syncPolicy }}
   {{- if not $syncPolicy }}
@@ -33,7 +32,7 @@
     {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
   {{- end }}
 
-  {{- $createNamespace := .createNamespace }}
+  {{ $createNamespace := .createNamespace }}
   {{- if not $createNamespace }}
     {{- $createNamespace = $.Values.spec.createNamespace }}
   {{- end }}
@@ -52,25 +51,34 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-    {{- if eq $isHelm true }}
+    {{- if $isHelm eq true }}
     helm:
       releaseName: {{ .name }}
     {{- end }}
-
-  {{- if and $syncPolicy (eq $syncPolicy true) }}
+  {{- if $syncPolicy}}
   syncPolicy:
-    automated:
-      {{- if and $prune (eq $prune true) }}
-      prune: {{ $prune }}
-      {{- end }}
-      {{- if and $selfHeal (eq $selfHeal true) }}
-      selfHeal: {{ $selfHeal }}
-      {{- end }}
-    {{- if eq $createNamespace true }}
-    syncOptions:
-      - CreateNamespace=true
+    {{- if not $prune and not $selfHeal }}
+    automated: {}
     {{- end }}
-  {{- else }}
+    {{- if $prune and not $selfHeal }}
+    automated:
+        prune: {{ $prune }}
+    {{- end }}
+    {{- if not $prune and $selfHeal }}
+    automated:
+        selfHeal: {{ $selfHeal }}
+    {{- end }}
+    {{- if $prune and $selfHeal }}
+    automated:
+        prune: {{ $prune }}
+        selfHeal: {{ $selfHeal }}
+    {{- end }}
+    {{- if $createNamespace }}
+  syncOptions:
+    - CreateNamespace=true
+    {{- end }}
+  {{- end}}
+  {{- if not $syncPolicy }}
   syncPolicy: {}
   {{- end }}
 {{- end }}
