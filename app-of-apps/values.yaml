@@ -37,4 +37,13 @@ applications:
 
   - name: metrics-server
     namespace: kube-system
-    repoURL: https://dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+
+  - name: strimzi-kafka-operator
+    namespace: kafka
+    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
+    appPath: helm/strimzi
+    targetRevision: master
+    syncPolicy: true  # Optional: Override global syncPolicy settings per app
+    prune: false            # Optional: Override syncPolicy settings per app
+    createNamespace: true  # Optional: Override namespace creation setting for this app
