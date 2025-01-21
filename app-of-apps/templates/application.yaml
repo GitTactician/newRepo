@@ -8,19 +8,32 @@
 
   # Handle Helm configuration and other parameters
   {{- $isHelm := .helm }}
+  {{- if not $isHelm }}
+    {{- $isHelm = false }}
+  {{- end }}
+
+  # Handle repoURL with fallback
   {{- $repoURL := .repoUrl }}
   {{- if not $repoURL }}
     {{- $repoURL = $.Values.spec.source.repoURL }}
   {{- end }}
+
+  # Handle targetRevision with fallback
   {{- $targetRevision := .targetRevision }}
   {{- if not $targetRevision }}
     {{- $targetRevision = $.Values.spec.source.targetRevision }}
+  {{- end }}
+  {{- if not $targetRevision }}
+    {{- $targetRevision = "main" }}  # Default to 'main' if no targetRevision
   {{- end }}
 
   # Handle syncPolicy with fallback
   {{- $syncPolicy := .syncPolicy }}
   {{- if not $syncPolicy }}
     {{- $syncPolicy = $.Values.spec.syncPolicy }}
+  {{- end }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = false }}  # Default to false if no syncPolicy
   {{- end }}
 
   # Prune default logic: If prune is not set, default to false
@@ -55,21 +68,16 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-    {{- if $isHelm }}
+    {{- if eq $isHelm true }}
     helm:
       releaseName: {{ .name }}
     {{- end }}
-  
-  {{- if $syncPolicy }}
+  {{- if eq $syncPolicy true }}
   syncPolicy:
     automated:
-      {{- if $prune }}
       prune: {{ $prune }}
-      {{- end }}
-      {{- if $selfHeal }}
       selfHeal: {{ $selfHeal }}
-      {{- end }}
-    {{- if $createNamespace }}
+    {{- if eq $createNamespace true }}
     syncOptions:
       - CreateNamespace=true
     {{- end }}

@@ -6,35 +6,27 @@ spec:
     targetRevision: main
 
   # Global syncPolicy and namespace creation settings (optional)
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-  createNamespace: false  # Set to true if namespaces need to be automatically created
+  syncPolicy: false  # Set to true if automatic sync is desired
+  prune: true
+  selfHeal: true
+  createNamespace: true  # Set to true if namespaces need to be automatically created
 
 applications:
   - name: sealed-secrets
     namespace: kube-system
     helm: true
-    # Additional settings specific to this app can be added here
-    prune: true             # Optional: Override syncPolicy settings per app
-    selfHeal: true          # Optional: Override syncPolicy settings per app
-    createNamespace: false  # Optional: Override namespace creation setting for this app
+    syncPolicy: true  # Optional: Override global syncPolicy settings per app
+
   
   - name: nginx-ingress
     namespace: nginx-ingress
-    helm: false
+    syncPolicy: true  # Optional: Override global syncPolicy settings per app
     prune: false            # Optional: Override syncPolicy settings per app
-    selfHeal: false         # Optional: Override syncPolicy settings per app
     createNamespace: false  # Optional: Override namespace creation setting for this app
 
   - name: cert-manager
     namespace: cert-manager
-    helm: false
-    prune: false            # Optional: Override syncPolicy settings per app
-    selfHeal: false         # Optional: Override syncPolicy settings per app
-    createNamespace: false  # Optional: Override namespace creation setting for this app
-
+    
   - name: apache-httpd
     namespace: apache-httpd
     helm: true
