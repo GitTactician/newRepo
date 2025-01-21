@@ -18,7 +18,7 @@ applications:
     syncPolicy: true  # Optional: Override global syncPolicy settings per app
 
   
-  - name: nginx-ingress
+  - name: nginx
     namespace: ingress-nginx
     helm: true
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
