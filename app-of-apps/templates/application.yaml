@@ -81,7 +81,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
     {{- end }}
-  {{- else }}
-  syncPolicy: {}
   {{- end }}
 {{- end }}
