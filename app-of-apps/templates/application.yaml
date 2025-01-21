@@ -68,10 +68,10 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-    {{- if eq $isHelm true }}
-    helm:
-      releaseName: {{ .name }}
-    {{- end }}
+    # {{- if eq $isHelm true }}
+    # helm:
+    #   releaseName: {{ .name }}
+    # {{- end }}
   {{- if eq $syncPolicy true }}
   syncPolicy:
     automated:
