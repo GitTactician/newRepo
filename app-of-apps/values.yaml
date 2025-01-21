@@ -9,7 +9,7 @@ spec:
   syncPolicy: false  # Set to true if automatic sync is desired
   prune: true
   selfHeal: true
-  createNamespace: true  # Set to true if namespaces need to be automatically created
+  createNamespace: false  # Set to true if namespaces need to be automatically created
 
 applications:
   - name: sealed-secrets
@@ -22,7 +22,7 @@ applications:
     namespace: nginx-ingress
     syncPolicy: true  # Optional: Override global syncPolicy settings per app
     prune: false            # Optional: Override syncPolicy settings per app
-    createNamespace: false  # Optional: Override namespace creation setting for this app
+    createNamespace: true  # Optional: Override namespace creation setting for this app
 
   - name: cert-manager
     namespace: cert-manager
@@ -33,3 +33,8 @@ applications:
     prune: true             # Optional: Override syncPolicy settings per app
     selfHeal: true          # Optional: Override syncPolicy settings per app
     createNamespace: true   # Optional: Override namespace creation setting for this app
+
+  - name: metrics-server
+    namespace: metrics-server
+    repoURL: https://dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    
