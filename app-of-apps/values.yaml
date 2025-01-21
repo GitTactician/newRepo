@@ -1,43 +1,76 @@
-spec:
-  destination:
-    server: https://kubernetes.default.svc
-  source:
-    repoURL: https://github.com/GitTactician/app-of-apps
-    targetRevision: main
+{{- range .Values.applications }}
+  # Determine appPath with fallback
+  {{- $basePath := .appPath }}
+  {{- if not $basePath }}
+    {{- $basePath = "apps" }}
+  {{- end }}
+  {{- $appPath := printf "%s/%s" $basePath .name }}
 
-  # Global syncPolicy and namespace creation settings (optional)
+  # Handle Helm configuration and other parameters
+  {{- $isHelm := .helm }}
+  {{- $repoURL := .repoUrl }}
+  {{- if not $repoURL }}
+    {{- $repoURL = $.Values.spec.source.repoURL }}
+  {{- end }}
+  {{- $targetRevision := .targetRevision }}
+  {{- if not $targetRevision }}
+    {{- $targetRevision = $.Values.spec.source.targetRevision }}
+  {{- end }}
+
+  # Handle syncPolicy with fallback
+  {{- $syncPolicy := .syncPolicy }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = $.Values.spec.syncPolicy }}
+  {{- end }}
+
+  {{- $prune := .prune }}
+  {{- if not $prune }}
+    {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
+  {{- end }}
+
+  {{- $selfHeal := .selfHeal }}
+  {{- if not $selfHeal }}
+    {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
+  {{- end }}
+
+  {{- $createNamespace := .createNamespace }}
+  {{- if not $createNamespace }}
+    {{- $createNamespace = $.Values.spec.createNamespace }}
+  {{- end }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: {{ $.Values.spec.destination.server }}
+    namespace: {{ .namespace }}
+  source:
+    repoURL: {{ $repoURL }}
+    targetRevision: {{ $targetRevision }}
+    path: {{ $appPath }}
+    {{- if $isHelm }}
+    helm:
+      releaseName: {{ .name }}
+    {{- end }}
+  
+  {{- if $syncPolicy }}
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
-  createNamespace: false  # Set to true if namespaces need to be automatically created
-
-applications:
-  - name: sealed-secrets
-    namespace: kube-system
-    helm: true
-    # Additional settings specific to this app can be added here
-    prune: true             # Optional: Override syncPolicy settings per app
-    selfHeal: true          # Optional: Override syncPolicy settings per app
-    createNamespace: false  # Optional: Override namespace creation setting for this app
-  
-  - name: nginx-ingress
-    namespace: nginx-ingress
-    helm: false
-    prune: false            # Optional: Override syncPolicy settings per app
-    selfHeal: false         # Optional: Override syncPolicy settings per app
-    createNamespace: false  # Optional: Override namespace creation setting for this app
-
-  - name: cert-manager
-    namespace: cert-manager
-    helm: false
-    prune: false            # Optional: Override syncPolicy settings per app
-    selfHeal: false         # Optional: Override syncPolicy settings per app
-    createNamespace: false  # Optional: Override namespace creation setting for this app
-
-  - name: apache-httpd
-    namespace: apache-httpd
-    helm: true
-    prune: true             # Optional: Override syncPolicy settings per app
-    selfHeal: true          # Optional: Override syncPolicy settings per app
-    createNamespace: true   # Optional: Override namespace creation setting for this app
+      {{- if $prune }}
+      prune: {{ $prune }}
+      {{- end }}
+      {{- if $selfHeal }}
+      selfHeal: {{ $selfHeal }}
+      {{- end }}
+    {{- if $createNamespace }}
+    syncOptions:
+      - CreateNamespace=true
+    {{- end }}
+  {{- else }}
+  syncPolicy: {}
+  {{- end }}
+{{- end }}
