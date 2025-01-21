@@ -1,35 +1,42 @@
 {{- range .Values.applications }}
-  {{- $appPath := printf "apps/%s" .name }}
-  
-  # get ishelm value from values.yaml
-  {{- $isHelm := .helm }}
+  # Define default values and allow overrides
+  {{- $basePath := .path | default "apps" }}
+  {{- $appPath := printf "%s/%s" $basePath .name }}
+  {{- $appRepoURL := .repoURL | default $.Values.spec.source.repoURL }}
+  {{- $appTargetRevision := .targetRevision | $.Values.spec.source.targetRevision | default "main" }}
+  {{- $appSyncAutomated := .syncPolicy.automated | $.Values.spec.syncPolicy.automated | default false }}
+  {{- $appSyncPrune := .syncPolicy.prune | $.Values.spec.syncPolicy.prune | default false }}
+  {{- $appSyncSelfHeal := .syncPolicy.selfHeal | $.Values.spec.syncPolicy.selfHeal | default false }}
+  {{- $appNamespaceCreation := .namespaceCreation | $.Values.spec.namespaceCreation | default false }}
+
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .name }}
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   destination:
     server: {{ $.Values.spec.destination.server }}
     namespace: {{ .namespace }}
+    {{- if $appNamespaceCreation }}
+    namespaceCreation: true
+    {{- end }}
   source:
-    {{- if $isHelm }}
+    repoURL: {{ $appRepoURL }}
+    targetRevision: {{ $appTargetRevision }}
+    path: {{ $appPath }}
+    {{- if .helm }}
     helm:
       releaseName: {{ .name }}
-    repoURL: {{ $.Values.spec.source.repoURL }}
-    targetRevision: {{ $.Values.spec.source.targetRevision }}
-    path: {{ $appPath }}
-    {{- else }}
-    repoURL: {{ $.Values.spec.source.repoURL }}
-    targetRevision: {{ $.Values.spec.source.targetRevision }}
-    path: {{ $appPath }}
     {{- end }}
   syncPolicy:
+    {{- if $appSyncAutomated }}
     automated:
-      prune: true
-      selfHeal: true
+      prune: {{ $appSyncPrune }}
+      selfHeal: {{ $appSyncSelfHeal }}
+    {{- else }}
+    automated: false
+    {{- end }}
 {{- end }}
