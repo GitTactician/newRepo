@@ -1,76 +1,44 @@
 {{- range .Values.applications }}
-  # Define default values and allow overrides using explicit if conditions
-  {{- $basePath := .path }}
+  # Determine appPath with fallback
+  {{- $basePath := .appPath }}
   {{- if not $basePath }}
     {{- $basePath = "apps" }}
   {{- end }}
   {{- $appPath := printf "%s/%s" $basePath .name }}
 
-  {{- $appRepoURL := .repoURL }}
-  {{- if not $appRepoURL }}
-    {{- $appRepoURL = $.Values.spec.source.repoURL }}
+  # Handle Helm configuration and other parameters
+  {{- $isHelm := .helm }}
+  {{- $repoURL := .repoUrl }}
+  {{- if not $repoURL }}
+    {{- $repoURL = $.Values.spec.source.repoURL }}
   {{- end }}
-
-  {{- $appTargetRevision := .targetRevision }}
-  {{- if not $appTargetRevision }}
-    {{- $appTargetRevision = $.Values.spec.source.targetRevision }}
+  {{- $targetRevision := .targetRevision }}
+  {{- if not $targetRevision }}
+    {{- $targetRevision = $.Values.spec.source.targetRevision }}
   {{- end }}
-  {{- if not $appTargetRevision }}
-    {{- $appTargetRevision = "main" }}
-  {{- end }}
-
-  {{- $appNamespaceCreation := .namespaceCreation }}
-  {{- if not $appNamespaceCreation }}
-    {{- $appNamespaceCreation = $.Values.spec.namespaceCreation }}
-  {{- end }}
-  {{- if not $appNamespaceCreation }}
-    {{- $appNamespaceCreation = false }}
-  {{- end }}
-
-  {{- $appSyncAutomated := .syncPolicy.automated }}
-  {{- if not $appSyncAutomated }}
-    {{- $appSyncAutomated = false }}
-  {{- end }}
-
-  {{- $appSyncPrune := .syncPolicy.prune }}
-  {{- if not $appSyncPrune }}
-    {{- $appSyncPrune = false }}
-  {{- end }}
-
-  {{- $appSyncSelfHeal := .syncPolicy.selfHeal }}
-  {{- if not $appSyncSelfHeal }}
-    {{- $appSyncSelfHeal = false }}
-  {{- end }}
-
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .name }}
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  project: {{ .project }}
+  project: default
   destination:
     server: {{ $.Values.spec.destination.server }}
     namespace: {{ .namespace }}
   source:
-    repoURL: {{ $appRepoURL }}
-    targetRevision: {{ $appTargetRevision }}
+    repoURL: {{ $repoURL }}
+    targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-    {{- if .helm }}
+    {{- if $isHelm }}
     helm:
       releaseName: {{ .name }}
     {{- end }}
   syncPolicy:
-    {{- if $appSyncAutomated }}
     automated:
-      prune: {{ $appSyncPrune }}
-      selfHeal: {{ $appSyncSelfHeal }}
-    {{- if $appNamespaceCreation }}
-    syncOptions:
-      - CreateNamespace= {{$appNamespaceCreation}}
-    {{- end }}
-    {{- else }}
-    {}
-    {{- end }}
+      prune: true
+      selfHeal: true
 {{- end }}
