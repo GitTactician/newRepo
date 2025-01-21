@@ -16,6 +16,7 @@
   {{- if not $targetRevision }}
     {{- $targetRevision = $.Values.spec.source.targetRevision }}
   {{- end }}
+
   # Handle syncPolicy with fallback
   {{- $syncPolicy := .syncPolicy }}
   {{- if not $syncPolicy }}
@@ -32,7 +33,7 @@
     {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
   {{- end }}
 
-  {{ $createNamespace := .createNamespace }}
+  {{- $createNamespace := .createNamespace }}
   {{- if not $createNamespace }}
     {{- $createNamespace = $.Values.spec.createNamespace }}
   {{- end }}
@@ -55,30 +56,21 @@ spec:
     helm:
       releaseName: {{ .name }}
     {{- end }}
-  {{- if $syncPolicy}}
+  
+  {{- if $syncPolicy }}
   syncPolicy:
-    {{- if not $prune and not $selfHeal }}
-    automated: {}
-    {{- end }}
-    {{- if $prune and not $selfHeal }}
     automated:
-        prune: {{ $prune }}
-    {{- end }}
-    {{- if not $prune and $selfHeal }}
-    automated:
-        selfHeal: {{ $selfHeal }}
-    {{- end }}
-    {{- if $prune and $selfHeal }}
-    automated:
-        prune: {{ $prune }}
-        selfHeal: {{ $selfHeal }}
-    {{- end }}
+      {{- if $prune }}
+      prune: {{ $prune }}
+      {{- end }}
+      {{- if $selfHeal }}
+      selfHeal: {{ $selfHeal }}
+      {{- end }}
     {{- if $createNamespace }}
-  syncOptions:
-    - CreateNamespace=true
+    syncOptions:
+      - CreateNamespace=true
     {{- end }}
-  {{- end}}
-  {{- if not $syncPolicy }}
+  {{- else }}
   syncPolicy: {}
   {{- end }}
 {{- end }}
