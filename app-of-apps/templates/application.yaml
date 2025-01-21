@@ -21,9 +21,6 @@
   {{- if not $syncPolicy }}
     {{- $syncPolicy = $.Values.spec.syncPolicy }}
   {{- end }}
-  {{- if not $syncPolicy }}
-    {{- $syncPolicy = "false" }}
-  {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -43,16 +40,15 @@ spec:
     helm:
       releaseName: {{ .name }}
     {{- end }}
-  {{- if eq $syncPolicy == "true" }}
+  {{- if $syncPolicy}}
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
   syncOptions:
     - CreateNamespace=true
-  # else
-  {{- else}}
-  syncPolicy: {}
   {{- end}}
+  {{- if not $syncPolicy }}
+  syncPolicy: {}
   {{- end }}
 {{- end }}
