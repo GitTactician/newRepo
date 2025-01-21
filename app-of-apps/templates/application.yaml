@@ -1,44 +1,45 @@
 {{- range .Values.applications }}
-  # Define default values and allow overrides
-
+  # Define default values and allow overrides using explicit if conditions
   {{- $basePath := .path }}
   {{- if not $basePath }}
     {{- $basePath = "apps" }}
   {{- end }}
   {{- $appPath := printf "%s/%s" $basePath .name }}
-  
+
   {{- $appRepoURL := .repoURL }}
   {{- if not $appRepoURL }}
     {{- $appRepoURL = $.Values.spec.source.repoURL }}
   {{- end }}
-  
-  {{- if .targetRevision }}
-    {{- $appTargetRevision := .targetRevision }}
-  {{- else }}
-    {{- if $.Values.spec.source.targetRevision }}
-      {{- $appTargetRevision := $.Values.spec.source.targetRevision }}
-    {{- else }}
-      {{- $appTargetRevision := "main" }}
-    {{- end }}
+
+  {{- $appTargetRevision := .targetRevision }}
+  {{- if not $appTargetRevision }}
+    {{- $appTargetRevision = $.Values.spec.source.targetRevision }}
+  {{- end }}
+  {{- if not $appTargetRevision }}
+    {{- $appTargetRevision = "main" }}
   {{- end }}
 
-  {{- if .syncPolicy }}
-    {{- if .syncPolicy.automated }}
-      {{- $appSyncAutomated := .syncPolicy.automated }}
-    {{- else }}
-      {{- $appSyncAutomated := $.Values.spec.syncPolicy.automated | default false }}
-    {{- end }}
-    {{- $appSyncPrune := .syncPolicy.prune | default $.Values.spec.syncPolicy.prune | default false }}
-    {{- $appSyncSelfHeal := .syncPolicy.selfHeal | default $.Values.spec.syncPolicy.selfHeal | default false }}
-  {{- else }}
-    {{- $appSyncAutomated := $.Values.spec.syncPolicy.automated | default false }}
-    {{- $appSyncPrune := $.Values.spec.syncPolicy.prune | default false }}
-    {{- $appSyncSelfHeal := $.Values.spec.syncPolicy.selfHeal | default false }}
-  {{- end }}
-  
   {{- $appNamespaceCreation := .namespaceCreation }}
   {{- if not $appNamespaceCreation }}
-    {{- $appNamespaceCreation = $.Values.spec.namespaceCreation | default false }}
+    {{- $appNamespaceCreation = $.Values.spec.namespaceCreation }}
+  {{- end }}
+  {{- if not $appNamespaceCreation }}
+    {{- $appNamespaceCreation = false }}
+  {{- end }}
+
+  {{- $appSyncAutomated := .syncPolicy.automated }}
+  {{- if not $appSyncAutomated }}
+    {{- $appSyncAutomated = false }}
+  {{- end }}
+
+  {{- $appSyncPrune := .syncPolicy.prune }}
+  {{- if not $appSyncPrune }}
+    {{- $appSyncPrune = false }}
+  {{- end }}
+
+  {{- $appSyncSelfHeal := .syncPolicy.selfHeal }}
+  {{- if not $appSyncSelfHeal }}
+    {{- $appSyncSelfHeal = false }}
   {{- end }}
 
 ---
@@ -48,13 +49,10 @@ metadata:
   name: {{ .name }}
   namespace: argocd
 spec:
-  project: default
+  project: {{ .project }}
   destination:
     server: {{ $.Values.spec.destination.server }}
     namespace: {{ .namespace }}
-    {{- if $appNamespaceCreation }}
-    namespaceCreation: true
-    {{- end }}
   source:
     repoURL: {{ $appRepoURL }}
     targetRevision: {{ $appTargetRevision }}
@@ -68,7 +66,11 @@ spec:
     automated:
       prune: {{ $appSyncPrune }}
       selfHeal: {{ $appSyncSelfHeal }}
+    {{- if $appNamespaceCreation }}
+    syncOptions:
+      - CreateNamespace= {{$appNamespaceCreation}}
+    {{- end }}
     {{- else }}
-    automated: false
+    {}
     {{- end }}
 {{- end }}
