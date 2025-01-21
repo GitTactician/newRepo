@@ -3,11 +3,11 @@
   {{- $basePath := .path | default "apps" }}
   {{- $appPath := printf "%s/%s" $basePath .name }}
   {{- $appRepoURL := .repoURL | default $.Values.spec.source.repoURL }}
-  {{- $appTargetRevision := .targetRevision | $.Values.spec.source.targetRevision | default "main" }}
-  {{- $appSyncAutomated := .syncPolicy.automated | $.Values.spec.syncPolicy.automated | default false }}
-  {{- $appSyncPrune := .syncPolicy.prune | $.Values.spec.syncPolicy.prune | default false }}
-  {{- $appSyncSelfHeal := .syncPolicy.selfHeal | $.Values.spec.syncPolicy.selfHeal | default false }}
-  {{- $appNamespaceCreation := .namespaceCreation | $.Values.spec.namespaceCreation | default false }}
+  {{- $appTargetRevision := (.targetRevision | default $.Values.spec.source.targetRevision | default "main") }}
+  {{- $appSyncAutomated := (.syncPolicy.automated | default $.Values.spec.syncPolicy.automated | default false) }}
+  {{- $appSyncPrune := (.syncPolicy.prune | default $.Values.spec.syncPolicy.prune | default false) }}
+  {{- $appSyncSelfHeal := (.syncPolicy.selfHeal | default $.Values.spec.syncPolicy.selfHeal | default false) }}
+  {{- $appNamespaceCreation := (.namespaceCreation | default $.Values.spec.namespaceCreation | default false) }}
 
 ---
 apiVersion: argoproj.io/v1alpha1
