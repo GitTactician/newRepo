@@ -4,49 +4,39 @@ spec:
   source:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
-  createNamespace: true
+
+  # Global syncPolicy and namespace creation settings (optional)
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: false
+      prune:
+      selfHeal:
 
 applications:
   - name: sealed-secrets
     namespace: kube-system
     helm: true
-    appPath: apps/sealed-secrets
-    targetRevision: v1.0.0
-    syncPolicy: true
-    prune: true
-    selfHeal: true
-    createNamespace: false
-
+    # Additional settings specific to this app can be added here
+    prune: true             # Optional: Override syncPolicy settings per app
+    selfHeal: true          # Optional: Override syncPolicy settings per app
+    createNamespace: false  # Optional: Override namespace creation setting for this app
+  
   - name: nginx-ingress
     namespace: nginx-ingress
     helm: false
-    appPath: apps/nginx-ingress
-    targetRevision: v2.1.0
-    syncPolicy: false
-    prune: false
-    selfHeal: false
-    createNamespace: true
+    prune: false            # Optional: Override syncPolicy settings per app
+    selfHeal: false         # Optional: Override syncPolicy settings per app
+    createNamespace: false  # Optional: Override namespace creation setting for this app
 
   - name: cert-manager
     namespace: cert-manager
-    helm: true
-    appPath: apps/cert-manager
-    targetRevision: v3.2.0
-    syncPolicy: true
-    prune: true
-    selfHeal: false
-    createNamespace: true
+    helm: false
+    prune: false            # Optional: Override syncPolicy settings per app
+    selfHeal: false         # Optional: Override syncPolicy settings per app
+    createNamespace: false  # Optional: Override namespace creation setting for this app
 
   - name: apache-httpd
     namespace: apache-httpd
-    helm: false
-    appPath: apps/apache-httpd
-    targetRevision: main
-    syncPolicy: false
-    prune: true
-    selfHeal: true
-    createNamespace: false
+    helm: true
+    prune: true             # Optional: Override syncPolicy settings per app
+    selfHeal: true          # Optional: Override syncPolicy settings per app
+    createNamespace: true   # Optional: Override namespace creation setting for this app
