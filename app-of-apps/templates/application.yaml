@@ -6,16 +6,25 @@
   {{- end }}
   {{- $appPath := printf "%s/%s" $basePath .name }}
 
-  # Handle Helm configuration and other parameters
-  {{- $isHelm := .helm }}
-  {{- if not $isHelm }}
-    {{- $isHelm = false }}
-  {{- end }}
-
   # Handle repoURL with fallback
   {{- $repoURL := .repoURL }}
   {{- if not $repoURL }}
     {{- $repoURL = $.Values.spec.source.repoURL }}
+  {{- end }}
+
+  # add destination server
+  {{- $destinationServer := .destinationServer }}
+  {{- if not $destinationServer }}
+    {{- $destinationServer = $.Values.spec.destination.server }}
+  {{- end }}
+
+  # add project
+  {{- $project := .project }}
+  {{- if not $project }}
+    {{- $project = $.Values.spec.project }}
+  {{- end }}
+  {{- if not $project }}
+    {{- $project = "default" }}
   {{- end }}
 
   # Handle targetRevision with fallback
@@ -60,18 +69,14 @@ metadata:
   name: {{ .name }}
   namespace: argocd
 spec:
-  project: default
+  project: {{ $project }}
   destination:
-    server: {{ $.Values.spec.destination.server }}
+    server: {{ $destinationServer }}
     namespace: {{ .namespace }}
   source:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-    # {{- if eq $isHelm true }}
-    # helm:
-    #   releaseName: {{ .name }}
-    # {{- end }}
   {{- if eq $syncPolicy true }}
   syncPolicy:
     automated:
