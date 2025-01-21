@@ -21,6 +21,17 @@
   {{- if not $syncPolicy }}
     {{- $syncPolicy = $.Values.spec.syncPolicy }}
   {{- end }}
+
+  {{- $prune := .prune }}
+  {{- if not $prune }}
+    {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
+  {{- end }}
+
+  {{- $selfHeal := .selfHeal }}
+  {{- if not $selfHeal }}
+    {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
+  {{- end }}
+
   {{ $createNamespace := .createNamespace }}
   {{- if not $createNamespace }}
     {{- $createNamespace = $.Values.spec.createNamespace }}
@@ -46,9 +57,22 @@ spec:
     {{- end }}
   {{- if $syncPolicy}}
   syncPolicy:
+    {{- if not $prune and not $selfHeal }}
+    automated: {}
+    {{- end }}
+    {{- if $prune and not $selfHeal }}
     automated:
-      prune: true
-      selfHeal: true
+        prune: {{ $prune }}
+    {{- end }}
+    {{- if not $prune and $selfHeal }}
+    automated:
+        selfHeal: {{ $selfHeal }}
+    {{- end }}
+    {{- if $prune and $selfHeal }}
+    automated:
+        prune: {{ $prune }}
+        selfHeal: {{ $selfHeal }}
+    {{- end }}
     {{- if $createNamespace }}
   syncOptions:
     - CreateNamespace=true
