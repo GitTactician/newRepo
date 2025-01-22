@@ -39,11 +39,11 @@
   # Handle syncPolicy with fallback
 
   {{- $syncPolicy:= false}}
-  {{ if .syncPolicy.automated }}
+  {{- if hasKey .syncPolicy "automated" }}
     {{- $syncPolicy = true }}
   {{- end }}
   {{- if eq $syncPolicy false }}
-    {{- if $.Values.spec.syncPolicy.automated }}
+    {{- if haskey $.Values.spec.syncPolicy "automated" }}
       {{- $syncPolicy = true }}
     {{- end }}
   {{- end }}
