@@ -56,7 +56,7 @@
   {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := c.syncPolicy.automated.selfHeal }}
+  {{- $selfHeal := .syncPolicy.automated.selfHeal }}
   {{- if not $selfHeal }}
     {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
   {{- end }}
