@@ -5,53 +5,53 @@ spec:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
 
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
-    syncOptions:
-      createNamespace: false
+  # syncPolicy:
+  #   automated:
+  #     prune: false
+  #     selfHeal: false
+  #   syncOptions:
+  #     createNamespace: false
 
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
-      syncOptions:
-        createNamespace: false
+    # syncPolicy:
+    #   automated:
+    #     prune: false
+    #     selfHeal: false
+    #   syncOptions:
+    #     createNamespace: false
 
   - name: nginx
     namespace: ingress-nginx
     source:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
-      syncOptions:
-        createNamespace: false
+    # syncPolicy:
+    #   automated:
+    #     prune: false
+    #     selfHeal: false
+    #   syncOptions:
+    #     createNamespace: false
 
   - name: cert-manager
     namespace: cert-manager
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
-      syncOptions:
-        createNamespace: false
+    # syncPolicy:
+    #   automated:
+    #     prune: false
+    #     selfHeal: false
+    #   syncOptions:
+    #     createNamespace: false
 
   - name: metrics-server
     namespace: kube-system
     source:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
-      syncOptions:
-        createNamespace: false
+    # syncPolicy:
+    #   automated:
+    #     prune: false
+    #     selfHeal: false
+    #   syncOptions:
+    #     createNamespace: false
 
   - name: strimzi-kafka-operator
     namespace: kafka
@@ -59,9 +59,9 @@ applications:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
       targetRevision: master
     appPath: helm/strimzi
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
-      syncOptions:
-        createNamespace: false
+    # syncPolicy:
+    #   automated:
+    #     prune: false
+    #     selfHeal: false
+    #   syncOptions:
+    #     createNamespace: false
