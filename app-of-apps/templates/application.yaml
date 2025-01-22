@@ -37,17 +37,18 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  # Check if `syncPolicy` is defined in the application's context
-{{- if hasKey . "syncPolicy" }}
-  {{- $syncPolicy = true }}
-{{- end }}
+  {{- printf "Debug: .syncPolicy = %v\n" .syncPolicy | nindent 2 }}
+  {{- printf "Debug: $.Values.spec.syncPolicy = %v\n" $.Values.spec.syncPolicy | nindent 2 }}
 
-# If not defined in the application, fallback to `spec.syncPolicy` in `Values`
-{{- if eq $syncPolicy false }}
-  {{- if hasKey $.Values.spec "syncPolicy" }}
+  {{- $syncPolicy:= false}}
+  {{ if .syncPolicy }}
     {{- $syncPolicy = true }}
   {{- end }}
-{{- end }}
+  {{- if eq $syncPolicy false }}
+    {{- if $.Values.spec.syncPolicy }}
+      {{- $syncPolicy = true }}
+    {{- end }}
+  {{- end }}
 
   # Prune default logic: If prune is not set, default to false
   {{- $prune :=  false }}
