@@ -64,6 +64,7 @@ The main Helm chart is located in the `app-of-apps/` directory and includes:
 
 This Helm template generates ArgoCD `Application` resources based on the `values.yaml` file. It supports global and per-application overrides for critical parameters such as:
 
+- `project`: Project name.
 - `repoURL`: Repository URL for the application source.
 - `targetRevision`: Branch, tag, or commit to deploy.
 - `syncPolicy`: Configures automatic synchronization (optional).
@@ -83,6 +84,7 @@ The following parameters apply globally unless overridden at the application lev
 - `spec.destination.server` (Required): Specifies the Kubernetes API server address.
 - `spec.source.repoURL` (Required): Default Git repository URL.
 - `spec.source.targetRevision` (Optional): Default branch, tag, or commit to deploy. Defaults to `main`.
+- `spec.source.project` (optional): Default `default` project.
 - `syncPolicy` (Optional): Enables global synchronization policy. Defaults to `false`.
 - `prune` (Optional): Default pruning setting. Defaults to `true`.
 - `selfHeal` (Optional): Default self-healing setting. Defaults to `true`.
@@ -96,6 +98,7 @@ Each application can override the global configuration using the following param
 - `namespace` (Required): Target namespace for the application.
 - `repoURL` (Optional): Application-specific repository URL. Overrides `spec.source.repoURL`.
 - `targetRevision` (Optional): Application-specific branch, tag, or commit. Overrides `spec.source.targetRevision`.
+- `project` (optional): Application-specific project. Overrides global `spec.source.project`.
 - `syncPolicy` (Optional): Application-specific sync policy. Overrides global `syncPolicy`.
 - `prune` (Optional): Application-specific pruning. Overrides global `prune`.
 - `selfHeal` (Optional): Application-specific self-healing. Overrides global `selfHeal`.
