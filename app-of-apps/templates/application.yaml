@@ -81,7 +81,7 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-  {{- if eq $syncPolicy true }}
+  {{- if eq $syncPolicy false }}
   syncPolicy:
     automated:
       prune: {{ $prune }}

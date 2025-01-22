@@ -13,7 +13,3 @@ spec:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
     path: app-of-apps
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
