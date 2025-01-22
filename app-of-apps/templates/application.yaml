@@ -37,22 +37,26 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  {{- $syncPolicy := .syncPolicy.automated }}
-  {{- if not $syncPolicy }}
-    {{- $syncPolicy = $.Values.spec.syncPolicy.automated }}
+  {{- $syncPolicy := false }}
+
+  {{- if .syncPolicy }}
+    {{- $syncPolicy = true}}
   {{- end }}
-  {{- if not $syncPolicy }}
-    {{- $syncPolicy = false }}  # Default to false if no syncPolicy
+
+  {{- if eq $syncPolicy false }}
+    {{- if $.Values.spec.syncPolicy }}
+      {{- $syncPolicy = true }}
+    {{- end }}
   {{- end }}
 
   # Prune default logic: If prune is not set, default to false
-  {{- $prune := .syncPolicy.prune }}
+  {{- $prune := .prune }}
   {{- if not $prune }}
     {{- $prune = false }}
   {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := .syncPolicy.selfHeal }}
+  {{- $selfHeal := .selfHeal }}
   {{- if not $selfHeal }}
     {{- $selfHeal = false }}
   {{- end }}
