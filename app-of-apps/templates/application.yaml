@@ -1,12 +1,5 @@
 {{- range .Values.applications }}
-  # Determine appPath with fallback
-  # {{- $basePath := .appPath }}
-  # {{- if not $basePath }}
-  #   {{- $basePath = "apps" }}
-  # {{- end }}
-  # {{- $appPath := printf "%s/%s" $basePath .name }}
 
-  # Add destination server
   {{- $destinationServer := .destinationServer }}
   {{- if not $destinationServer }}
     {{- $destinationServer = $.Values.spec.destination.server }}
@@ -24,6 +17,14 @@
   {{- $appSource := .source }}
   {{- if not $appSource }}
     {{- $appSource = $.Values.spec.source }}
+  {{- end }}
+
+  # Set path fallback: First use app-specific path, then use "apps/%s" if not defined
+  {{- $appPath := .name }} # Default fallback is app name if path is not specified
+  {{- if $appSource.path }}
+    {{- $appPath = printf "%s/%s" $appSource.path .name }}
+  {{- else }}
+    {{- $appPath = printf "apps/%s" .name }}  # Default path
   {{- end }}
 
   # Handle syncPolicy with two-level fallback
@@ -46,7 +47,7 @@ spec:
   source:
     repoURL: {{ $appSource.repoURL }}
     targetRevision: {{ default "main" $appSource.targetRevision }}
-    path: {{ "apps" }}
+    path: {{ $appPath }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     automated:
