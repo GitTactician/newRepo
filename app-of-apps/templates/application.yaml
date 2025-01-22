@@ -19,14 +19,6 @@
     {{- $appSource = $.Values.spec.source }}
   {{- end }}
 
-  {{- range $key, $value := .source }}
-    {{- if (hasKey $appSource $key) }}
-      {{- $appSource = merge $appSource (dict $key $value) }}
-    {{- end }}
-  {{- end }}
-
-
-  # Set path fallback: First use app-specific path, then use "apps/%s" if not defined
   {{- $appPath := .name }} # Default fallback is app name if path is not specified
   {{- if $appSource.path }}
     {{- $appPath = printf "%s/%s" $appSource.path .name }}
@@ -34,10 +26,28 @@
     {{- $appPath = printf "apps/%s" .name }}  # Default path
   {{- end }}
 
+  {{- range $key, $value := $.Values.spec.source }}
+    {{- if not (hasKey $appSource $key) }}
+      {{- $appSource = merge $appSource (dict $key $value) }}
+    {{- end }}
+  {{- end }}
+
+
+  # Set path fallback: First use app-specific path, then use "apps/%s" if not defined
+  
+
   # Handle syncPolicy with two-level fallback
   {{- $appSyncPolicy := .syncPolicy }}
   {{- if not $appSyncPolicy }}
     {{- $appSyncPolicy = $.Values.spec.syncPolicy }}
+  {{- end }}
+
+  {{- if $.Values.spec.syncPolicy }}
+    {{- range $key, $value := $.Values.spec.syncPolicy }}
+      {{- if not (hasKey $appSyncPolicy $key) }}
+        {{- $appSyncPolicy = merge $appSyncPolicy (dict $key $value) }}
+      {{- end }}
+    {{- end }}
   {{- end }}
 
 ---
