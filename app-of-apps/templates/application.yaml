@@ -46,7 +46,7 @@
   {{- end }}
 
   # Prune default logic: If prune is not set, default to false
-  {{- $prune := .syncPolicy.automated }}
+  {{- $prune := .syncPolicy.automated.prune }}
   {{- if not $prune }}
     {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
   {{- end }}
