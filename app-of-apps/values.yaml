@@ -6,31 +6,33 @@ spec:
     targetRevision: main
 
   syncPolicy:
-      - automated:
-          prune: false
-          selfHeal: false
-      - syncOptions:
-          createNamespace: false
+    - automated:
+        prune: false
+        selfHeal: false
+    - syncOptions:
+        createNamespace: false
 
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    syncPolicy: true  # Optional: Override global syncPolicy settings per app
-
   
   - name: nginx
     namespace: ingress-nginx
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
 
   - name: cert-manager
     namespace: cert-manager
 
   - name: metrics-server
     namespace: kube-system
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
 
   - name: strimzi-kafka-operator
     namespace: kafka
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
+      targetRevision: master
     appPath: helm/strimzi
-    targetRevision: master
+    
