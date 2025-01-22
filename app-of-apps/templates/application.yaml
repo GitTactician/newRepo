@@ -82,7 +82,7 @@ spec:
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
   
-  {{- if $syncPolicy}}
+  {{- if $syncPolicy.automated}}
   syncPolicy:
     automated:
       prune: {{ $prune }}
