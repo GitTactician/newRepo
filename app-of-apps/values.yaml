@@ -5,12 +5,6 @@ spec:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
 
-  # Global syncPolicy and namespace creation settings (optional)
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-      
 applications:
   - name: sealed-secrets
     namespace: kube-system
