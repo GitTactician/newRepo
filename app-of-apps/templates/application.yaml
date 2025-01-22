@@ -43,7 +43,7 @@
     {{- $syncPolicy = true }}
   {{- end }}
   {{- if eq $syncPolicy false }}
-    {{- if haskey $.Values.spec.syncPolicy "automated" }}
+    {{- if hasKey $.Values.spec.syncPolicy "automated" }}
       {{- $syncPolicy = true }}
     {{- end }}
   {{- end }}
