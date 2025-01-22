@@ -12,13 +12,13 @@
     {{- $repoURL = $.Values.spec.source.repoURL }}
   {{- end }}
 
-  # add destination server
+  # Add destination server
   {{- $destinationServer := .destinationServer }}
   {{- if not $destinationServer }}
     {{- $destinationServer = $.Values.spec.destination.server }}
   {{- end }}
 
-  # add project
+  # Add project
   {{- $project := .project }}
   {{- if not $project }}
     {{- $project = $.Values.spec.project }}
@@ -36,36 +36,12 @@
     {{- $targetRevision = "main" }}  # Default to 'main' if no targetRevision
   {{- end }}
 
-  # Handle syncPolicy with fallback
-  {{- $syncPolicy := true }}
-
-  {{- if not .syncPolicy }}
-    {{- $syncPolicy = false}}
+  # Handle syncPolicy with two-level fallback
+  {{- $appSyncPolicy := .syncPolicy }}
+  {{- if not $appSyncPolicy }}
+    {{- $appSyncPolicy = $.Values.spec.syncPolicy }}
   {{- end }}
 
-  {{- if eq $syncPolicy true }}
-    {{- if not $.Values.spec.syncPolicy }}
-      {{- $syncPolicy = false }}
-    {{- end }}
-  {{- end }}
-
-  # Prune default logic: If prune is not set, default to false
-  {{- $prune := .prune }}
-  {{- if not $prune }}
-    {{- $prune = false }}
-  {{- end }}
-
-  # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := .selfHeal }}
-  {{- if not $selfHeal }}
-    {{- $selfHeal = false }}
-  {{- end }}
-
-  # CreateNamespace default logic: If createNamespace is not set, default to false
-  {{- $createNamespace := .syncPolicy.createNamespace }}
-  {{- if not $createNamespace }}
-    {{- $createNamespace = false }}
-  {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -81,14 +57,14 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-  {{- if eq $syncPolicy false }}
+  {{- if $appSyncPolicy }}
   syncPolicy:
     automated:
-      prune: {{ $prune }}
-      selfHeal: {{ $selfHeal }}
-    {{- if eq $createNamespace true }}
+      prune: {{ default "false" $appSyncPolicy.automated.prune }}
+      selfHeal: {{ default "false" $appSyncPolicy.automated.selfHeal }}
+    {{- if $appSyncPolicy.syncOptions }}
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace={{ default "false" $appSyncPolicy.syncOptions.createNamespace }}
     {{- end }}
   {{- end }}
 {{- end }}
