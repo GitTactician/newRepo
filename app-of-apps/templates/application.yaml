@@ -96,7 +96,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
     {{- end }}
-  {{- if not $syncPolicy }}
-
-  {{- end }}
 {{- end }}
