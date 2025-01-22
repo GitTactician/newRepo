@@ -6,11 +6,11 @@ spec:
     targetRevision: main
 
   syncPolicy:
-    - automated:
-        prune: false
-        selfHeal: false
-    - syncOptions:
-        createNamespace: false
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      createNamespace: false
 
 applications:
   - name: sealed-secrets
@@ -35,4 +35,3 @@ applications:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
       targetRevision: master
     appPath: helm/strimzi
-    
