@@ -19,7 +19,7 @@
     {{- $appSource = $.Values.spec.source }}
   {{- end }}
 
-  {{- range $key, $value := $.Values.spec.source }}
+  {{- range $key, $value := .source }}
     {{- if not (hasKey $appSource $key) }}
       {{- $appSource = merge $appSource (dict $key $value) }}
     {{- end }}
