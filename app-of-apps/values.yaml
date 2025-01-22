@@ -5,11 +5,12 @@ spec:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
 
-  # Global syncPolicy and namespace creation settings (optional)
-  syncPolicy: false  # Set to true if automatic sync is desired
-  prune: true
-  selfHeal: true
-  createNamespace: false  # Set to true if namespaces need to be automatically created
+  syncPolicy:
+      - automated:
+          prune: false
+          selfHeal: false
+      - syncOptions:
+          createNamespace: false
 
 applications:
   - name: sealed-secrets
@@ -20,18 +21,9 @@ applications:
   - name: nginx
     namespace: ingress-nginx
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-    syncPolicy: true  # Optional: Override global syncPolicy settings per app
-    prune: false            # Optional: Override syncPolicy settings per app
-    createNamespace: true  # Optional: Override namespace creation setting for this app
 
   - name: cert-manager
     namespace: cert-manager
-    
-  - name: apache-httpd
-    namespace: apache-httpd
-    prune: true             # Optional: Override syncPolicy settings per app
-    selfHeal: true          # Optional: Override syncPolicy settings per app
-    createNamespace: true   # Optional: Override namespace creation setting for this app
 
   - name: metrics-server
     namespace: kube-system
@@ -42,6 +34,3 @@ applications:
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
     appPath: helm/strimzi
     targetRevision: master
-    syncPolicy: true  # Optional: Override global syncPolicy settings per app
-    prune: false            # Optional: Override syncPolicy settings per app
-    createNamespace: true  # Optional: Override namespace creation setting for this app
