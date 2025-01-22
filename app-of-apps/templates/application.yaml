@@ -19,6 +19,12 @@
     {{- $appSource = $.Values.spec.source }}
   {{- end }}
 
+  {{- range $key, $value := $.Values.spec.source }}
+    {{- if not (hasKey $appSource $key) }}
+      {{- $appSource = merge $appSource (dict $key $value) }}
+    {{- end }}
+  {{- end }}
+
 
   # Set path fallback: First use app-specific path, then use "apps/%s" if not defined
   {{- $appPath := .name }} # Default fallback is app name if path is not specified
