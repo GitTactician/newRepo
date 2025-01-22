@@ -6,11 +6,11 @@ spec:
     targetRevision: main
 
   syncPolicy:
-      - automated:
-          prune: false
-          selfHeal: false
-      - syncOptions:
-          createNamespace: false
+      automated:
+        prune: false
+        selfHeal: false
+      syncOptions:
+        createNamespace: false
 
 applications:
   - name: sealed-secrets
