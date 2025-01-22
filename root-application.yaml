@@ -3,6 +3,8 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/GitTactician/app-of-apps
+    targetRevision: main
+    path: apps
   syncPolicy: # Global syncPolicy definition
     automated:
       prune: true
