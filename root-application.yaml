@@ -3,8 +3,6 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/GitTactician/app-of-apps
-    targetRevision: main
-    path: apps
   syncPolicy: # Global syncPolicy definition
     automated:
       prune: true
@@ -19,8 +17,6 @@ applications:
     namespace: ingress-nginx
     source:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-      targetRevision: main
-      path: apps
     syncPolicy: # Application-specific syncPolicy override
       automated:
         prune: false
