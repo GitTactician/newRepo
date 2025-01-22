@@ -6,15 +6,17 @@ spec:
     targetRevision: main
 
   syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
-      syncOptions:
-        createNamespace: false
+      - automated:
+          prune: false
+          selfHeal: false
+      - syncOptions:
+          createNamespace: false
 
 applications:
   - name: sealed-secrets
     namespace: kube-system
+    syncPolicy: true  # Optional: Override global syncPolicy settings per app
+
   
   - name: nginx
     namespace: ingress-nginx
