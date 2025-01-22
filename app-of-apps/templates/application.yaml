@@ -37,15 +37,13 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  {{- printf "Debug: .syncPolicy = %v\n" .syncPolicy | nindent 2 }}
-  {{- printf "Debug: $.Values.spec.syncPolicy = %v\n" $.Values.spec.syncPolicy | nindent 2 }}
 
   {{- $syncPolicy:= false}}
-  {{ if .syncPolicy }}
+  {{ if .syncPolicy.automated }}
     {{- $syncPolicy = true }}
   {{- end }}
   {{- if eq $syncPolicy false }}
-    {{- if $.Values.spec.syncPolicy }}
+    {{- if $.Values.spec.syncPolicy.automated }}
       {{- $syncPolicy = true }}
     {{- end }}
   {{- end }}
