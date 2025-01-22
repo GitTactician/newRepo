@@ -37,15 +37,15 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  {{- $syncPolicy := false }}
+  {{- $syncPolicy := true }}
 
-  {{- if .syncPolicy }}
-    {{- $syncPolicy = true}}
+  {{- if not .syncPolicy }}
+    {{- $syncPolicy = false}}
   {{- end }}
 
-  {{- if eq $syncPolicy false }}
-    {{- if $.Values.spec.syncPolicy }}
-      {{- $syncPolicy = true }}
+  {{- if eq $syncPolicy true }}
+    {{- if not $.Values.spec.syncPolicy }}
+      {{- $syncPolicy = false }}
     {{- end }}
   {{- end }}
 
