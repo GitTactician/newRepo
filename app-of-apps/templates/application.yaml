@@ -98,6 +98,6 @@ spec:
       - CreateNamespace=true
     {{- end }}
     
-    {{- end }}
+  {{- end }}
 
 {{- end }}
