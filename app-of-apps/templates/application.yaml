@@ -37,15 +37,17 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  {{- $syncPolicy:= false}}
-  {{ if .syncPolicy }}
+  # Check if `syncPolicy` is defined in the application's context
+{{- if hasKey . "syncPolicy" }}
+  {{- $syncPolicy = true }}
+{{- end }}
+
+# If not defined in the application, fallback to `spec.syncPolicy` in `Values`
+{{- if eq $syncPolicy false }}
+  {{- if hasKey $.Values.spec "syncPolicy" }}
     {{- $syncPolicy = true }}
   {{- end }}
-  {{- if eq $syncPolicy false }}
-    {{- if $.Values.spec.syncPolicy }}
-      {{- $syncPolicy = true }}
-    {{- end }}
-  {{- end }}
+{{- end }}
 
   # Prune default logic: If prune is not set, default to false
   {{- $prune :=  false }}

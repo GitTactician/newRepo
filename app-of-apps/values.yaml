@@ -4,10 +4,10 @@ spec:
   source:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
-  # syncPolicy:
-  #     automated:
-  #       prune: true
-  #       selfHeal: true
+  syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
 
 applications:
   - name: sealed-secrets
