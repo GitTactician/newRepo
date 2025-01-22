@@ -16,7 +16,8 @@ applications:
 
   - name: nginx
     namespace: ingress-nginx
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
     syncPolicy: # Application-specific syncPolicy override
       automated:
         prune: false
@@ -35,13 +36,15 @@ applications:
 
   - name: metrics-server
     namespace: kube-system
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
     # No syncPolicy defined here; should inherit from global syncPolicy
 
   - name: strimzi-kafka-operator
     namespace: kafka
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
-    appPath: helm/strimzi
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
+      path: helm/strimzi
     targetRevision: master
     syncPolicy: # Application-specific syncPolicy override
       automated:

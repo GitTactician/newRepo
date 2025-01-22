@@ -1,16 +1,10 @@
 {{- range .Values.applications }}
   # Determine appPath with fallback
-  {{- $basePath := .appPath }}
-  {{- if not $basePath }}
-    {{- $basePath = "apps" }}
-  {{- end }}
-  {{- $appPath := printf "%s/%s" $basePath .name }}
-
-  # Handle repoURL with fallback
-  {{- $repoURL := .repoURL }}
-  {{- if not $repoURL }}
-    {{- $repoURL = $.Values.spec.source.repoURL }}
-  {{- end }}
+  # {{- $basePath := .appPath }}
+  # {{- if not $basePath }}
+  #   {{- $basePath = "apps" }}
+  # {{- end }}
+  # {{- $appPath := printf "%s/%s" $basePath .name }}
 
   # Add destination server
   {{- $destinationServer := .destinationServer }}
@@ -27,13 +21,9 @@
     {{- $project = "default" }}
   {{- end }}
 
-  # Handle targetRevision with fallback
-  {{- $targetRevision := .targetRevision }}
-  {{- if not $targetRevision }}
-    {{- $targetRevision = $.Values.spec.source.targetRevision }}
-  {{- end }}
-  {{- if not $targetRevision }}
-    {{- $targetRevision = "main" }}  # Default to 'main' if no targetRevision
+  {{- $appSource := .source }}
+  {{- if not $appSource }}
+    {{- $appSource = $.Values.spec.source }}
   {{- end }}
 
   # Handle syncPolicy with two-level fallback
@@ -54,9 +44,9 @@ spec:
     server: {{ $destinationServer }}
     namespace: {{ .namespace }}
   source:
-    repoURL: {{ $repoURL }}
-    targetRevision: {{ $targetRevision }}
-    path: {{ $appPath }}
+    repoURL: {{ $appSource.repoURL }}
+    targetRevision: {{ default "main" $appSource.targetRevision }}
+    path: {{ default {{ printf "apps/%s" .name }} {{ printf "%s/%s" $appSource.path .name }} }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     automated:
