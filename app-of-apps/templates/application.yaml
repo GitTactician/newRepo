@@ -47,8 +47,8 @@
   # # {{- else}}
   # #   {{- $syncPolicy = true }}
   # {{- end }}
-  
-  {{- if $syncPolicy }}
+
+
   # Prune default logic: If prune is not set, default to false
   {{- $prune := $.Values.spec.syncPolicy.automated.prune }}
   # {{- if not $prune }}
@@ -66,8 +66,7 @@
   {{- if not $selfHeal }}
     {{- $selfHeal = false }}
   {{- end }}
-  {{- end }}
-
+  
   # CreateNamespace default logic: If createNamespace is not set, default to false
   {{- $createNamespace := .createNamespace }}
   {{- if not $createNamespace }}
@@ -97,5 +96,9 @@ spec:
     syncOptions:
       - CreateNamespace=true
     {{- end }}
+  {{- if not $syncPolicy }}
+  syncPolicy:
+    manual: {}
+  {{- end }}
   {{- end }}
 {{- end }}
