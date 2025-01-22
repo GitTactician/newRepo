@@ -3,28 +3,45 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/GitTactician/app-of-apps
-    targetRevision: main
 
 applications:
   - name: sealed-secrets
     namespace: kube-system
-  
-  - name: nginx
+    # No source defined here; should inherit all from global spec.source
+
+  - name: ingress-nginx
     namespace: ingress-nginx
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    syncPolicy: # Application-specific syncPolicy override
+      automated:
+        prune: false
+        selfHeal: true
 
   - name: cert-manager
     namespace: cert-manager
+    # No source defined here; should inherit all from global spec.source
 
   - name: apache-httpd
     namespace: apache-httpd
+    syncPolicy: # Application-specific syncPolicy override
+      automated:
+        prune: true
+        selfHeal: true
 
   - name: metrics-server
     namespace: kube-system
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    # No syncPolicy defined here; should inherit from global syncPolicy
 
   - name: strimzi-kafka-operator
     namespace: kafka
-    repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
-    appPath: helm/strimzi
-    targetRevision: master
+    source:
+      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
+      path: helm/strimzi
+      targetRevision: master
+    syncPolicy: # Application-specific syncPolicy override
+      automated:
+        prune: false
+        selfHeal: false
