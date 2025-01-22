@@ -41,7 +41,6 @@
   {{ if .syncPolicy }}
     {{- $syncPolicy = true }}
   {{- end }}
-  {{- $syncPolicy := .syncPolicy }}
   {{- if eq $syncPolicy false }}
     {{- if $.Values.spec.syncPolicy }}
       {{- $syncPolicy = true }}
@@ -53,18 +52,18 @@
   # {{- if not $prune }}
   #   {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
   # {{- end }}
-  {{- if not $prune }}
-    {{- $prune = false }}
-  {{- end }}
+  # {{- if not $prune }}
+  #   {{- $prune = false }}
+  # {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
   {{- $selfHeal := false }}
   # {{- if not $selfHeal }}
   #   {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
   # {{- end }}
-  {{- if not $selfHeal }}
-    {{- $selfHeal = false }}
-  {{- end }}
+  # {{- if not $selfHeal }}
+  #   {{- $selfHeal = false }}
+  # {{- end }}
   
   # CreateNamespace default logic: If createNamespace is not set, default to false
   {{- $createNamespace := .createNamespace }}
