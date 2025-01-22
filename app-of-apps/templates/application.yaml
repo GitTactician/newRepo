@@ -37,7 +37,7 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  {{- $syncPolicy := .spec.syncPolicy }}
+  {{- $syncPolicy := .syncPolicy }}
   {{- if not $syncPolicy }}
     {{- $syncPolicy = $.Values.spec.syncPolicy }}
   {{- end }}
