@@ -46,7 +46,7 @@ spec:
   source:
     repoURL: {{ $appSource.repoURL }}
     targetRevision: {{ default "main" $appSource.targetRevision }}
-    path: {{ default {{ printf "apps/%s" .name }} {{ printf "%s/%s" $appSource.path .name }} }}
+    path: {{ "apps" }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     automated:
