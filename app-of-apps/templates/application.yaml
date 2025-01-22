@@ -37,32 +37,29 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  {{- $syncPolicy := $.Values.spec.syncPolicy.automated }}
-  # {{- if not $syncPolicy }}
-  #   {{- $syncPolicy = $.Values.spec.syncPolicy.automated }}
-  # {{- end }}
-  
-  # {{- if not $syncPolicy }}
-  #   {{- $syncPolicy = false }}  # Default to false if no syncPolicy
-  # # {{- else}}
-  # #   {{- $syncPolicy = true }}
-  # {{- end }}
+  {{- $syncPolicy := .spec.syncPolicy }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = $.Values.spec.syncPolicy }}
+  {{- end }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = false }}  # Default to false if no syncPolicy
+  {{- end }}
 
 
   # Prune default logic: If prune is not set, default to false
-  {{- $prune := $.Values.spec.syncPolicy.automated.prune }}
-  # {{- if not $prune }}
-  #   {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
-  # {{- end }}
+  {{- $prune := .syncPolicy.automated.prune }}
+  {{- if not $prune }}
+    {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
+  {{- end }}
   {{- if not $prune }}
     {{- $prune = false }}
   {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := $.Values.spec.syncPolicy.automated.prune }}
-  # {{- if not $selfHeal }}
-  #   {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
-  # {{- end }}
+  {{- $selfHeal := c.syncPolicy.automated.selfHeal }}
+  {{- if not $selfHeal }}
+    {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
+  {{- end }}
   {{- if not $selfHeal }}
     {{- $selfHeal = false }}
   {{- end }}
@@ -87,7 +84,7 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-  {{- if $syncPolicy }}
+  {{- if $syncPolicy and $syncPolicy.automated }}
   syncPolicy:
     automated:
       prune: {{ $prune }}
@@ -96,9 +93,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
     {{- end }}
-  {{- if not $syncPolicy }}
-  syncPolicy:
-    manual: {}
-  {{- end }}
   {{- end }}
 {{- end }}
