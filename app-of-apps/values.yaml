@@ -4,7 +4,8 @@ spec:
   source:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
-    syncPolicy: {}
+  syncPolicy:
+    automated: {}
 
 applications:
   - name: sealed-secrets
