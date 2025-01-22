@@ -20,7 +20,7 @@
   {{- end }}
 
   {{- range $key, $value := .source }}
-    {{- if not (hasKey $appSource $key) }}
+    {{- if (hasKey $appSource $key) }}
       {{- $appSource = merge $appSource (dict $key $value) }}
     {{- end }}
   {{- end }}
