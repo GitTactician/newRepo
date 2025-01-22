@@ -37,13 +37,19 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
+  {{- $syncPolicy:= false}}
+  {{ if .syncPolicy }}
+    {{- $syncPolicy = true }}
+  {{- end }}
   {{- $syncPolicy := .syncPolicy }}
-  {{- if not $syncPolicy }}
-    {{- $syncPolicy = $.Values.spec.syncPolicy }}
+  {{- if eq $syncPolicy false }}
+    {{- if $.Values.spec.syncPolicy }}
+      {{- $syncPolicy = true }}
+    {{- end }}
   {{- end }}
 
   # Prune default logic: If prune is not set, default to false
-  {{- $prune :=  $.Values.spec.syncPolicy.automated.prune }}
+  {{- $prune :=  false }}
   # {{- if not $prune }}
   #   {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
   # {{- end }}
@@ -52,7 +58,7 @@
   {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := $.Values.spec.syncPolicy.automated.selfHeal }}
+  {{- $selfHeal := false }}
   # {{- if not $selfHeal }}
   #   {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
   # {{- end }}
@@ -82,7 +88,7 @@ spec:
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
   
-  {{- if $syncPolicy}}
+  {{- if eq $syncPolicy true}}
   syncPolicy:
     automated:
       prune: {{ $prune }}
