@@ -1,14 +1,67 @@
 {{- range .Values.applications }}
-  {{- $basePath := .appPath | default "apps" }}
-  {{- $repoURL := .repoURL | default $.Values.spec.source.repoURL }}
-  {{- $destinationServer := .destinationServer | default $.Values.spec.destination.server }}
-  {{- $project := .project | default $.Values.spec.project | default "default" }}
-  {{- $targetRevision := .targetRevision | default $.Values.spec.source.targetRevision | default "main" }}
-  {{- $syncPolicy := .syncPolicy.automated | default $.Values.spec.syncPolicy.automated | default false }}
-  {{- $prune := .syncPolicy.prune | default $.Values.spec.syncPolicy.prune | default false }}
-  {{- $selfHeal := .syncPolicy.selfHeal | default $.Values.spec.syncPolicy.selfHeal | default false }}
-  {{- $createNamespace := .createNamespace | default false }}
+  # Determine appPath with fallback
+  {{- $basePath := .appPath }}
+  {{- if not $basePath }}
+    {{- $basePath = "apps" }}
+  {{- end }}
+  {{- $appPath := printf "%s/%s" $basePath .name }}
 
+  # Handle repoURL with fallback
+  {{- $repoURL := .repoURL }}
+  {{- if not $repoURL }}
+    {{- $repoURL = $.Values.spec.source.repoURL }}
+  {{- end }}
+
+  # add destination server
+  {{- $destinationServer := .destinationServer }}
+  {{- if not $destinationServer }}
+    {{- $destinationServer = $.Values.spec.destination.server }}
+  {{- end }}
+
+  # add project
+  {{- $project := .project }}
+  {{- if not $project }}
+    {{- $project = $.Values.spec.project }}
+  {{- end }}
+  {{- if not $project }}
+    {{- $project = "default" }}
+  {{- end }}
+
+  # Handle targetRevision with fallback
+  {{- $targetRevision := .targetRevision }}
+  {{- if not $targetRevision }}
+    {{- $targetRevision = $.Values.spec.source.targetRevision }}
+  {{- end }}
+  {{- if not $targetRevision }}
+    {{- $targetRevision = "main" }}  # Default to 'main' if no targetRevision
+  {{- end }}
+
+  # Handle syncPolicy with fallback
+  {{- $syncPolicy := .syncPolicy }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = $.Values.spec.syncPolicy }}
+  {{- end }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = false }}  # Default to false if no syncPolicy
+  {{- end }}
+
+  # Prune default logic: If prune is not set, default to false
+  {{- $prune := .prune }}
+  {{- if not $prune }}
+    {{- $prune = false }}
+  {{- end }}
+
+  # SelfHeal default logic: If selfHeal is not set, default to false
+  {{- $selfHeal := .selfHeal }}
+  {{- if not $selfHeal }}
+    {{- $selfHeal = false }}
+  {{- end }}
+
+  # CreateNamespace default logic: If createNamespace is not set, default to false
+  {{- $createNamespace := .createNamespace }}
+  {{- if not $createNamespace }}
+    {{- $createNamespace = false }}
+  {{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -23,13 +76,13 @@ spec:
   source:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
-    path: {{ $basePath }}/{{ .name }}
-  {{- if $syncPolicy }}
+    path: {{ $appPath }}
+  {{- if eq $syncPolicy true }}
   syncPolicy:
     automated:
       prune: {{ $prune }}
       selfHeal: {{ $selfHeal }}
-    {{- if $createNamespace }}
+    {{- if eq $createNamespace true }}
     syncOptions:
       - CreateNamespace=true
     {{- end }}
