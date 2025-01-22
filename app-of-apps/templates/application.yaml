@@ -13,7 +13,7 @@
   {{- end }}
 
   # add destination server
-  {{- $destinationServer := .destinationServer }}
+  {{- $destinationServer := .destination.server }}
   {{- if not $destinationServer }}
     {{- $destinationServer = $.Values.spec.destination.server }}
   {{- end }}
