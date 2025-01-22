@@ -1,6 +1,0 @@
-apiVersion: v2
-name: apache-httpd
-description: A Helm chart for deploying Apache HTTP Server
-type: application
-version: 0.1.0
-appVersion: "2.4"
