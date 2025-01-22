@@ -37,34 +37,31 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-
-  {{- $syncPolicy:= false}}
-  {{- if hasKey .syncPolicy "automated" }}
-    {{- $syncPolicy = true }}
+  {{- $syncPolicy := .syncPolicy.automated }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = $.Values.spec.syncPolicy.automated }}
   {{- end }}
-  {{- if eq $syncPolicy false }}
-    {{- if hasKey $.Values.spec.syncPolicy "automated" }}
-      {{- $syncPolicy = true }}
-    {{- end }}
+  {{- if not $syncPolicy }}
+    {{- $syncPolicy = false }}
   {{- end }}
 
   # Prune default logic: If prune is not set, default to false
-  {{- $prune :=  false }}
-  # {{- if not $prune }}
-  #   {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
-  # {{- end }}
-  # {{- if not $prune }}
-  #   {{- $prune = false }}
-  # {{- end }}
+  {{- $prune := .syncPolicy.prune }}
+  {{- if not $prune }}
+    {{- $prune = $.Values.spec.syncPolicy.prune }}
+  {{- end }}
+  {{- if not $prune }}
+    {{- $prune = false }}
+  {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := false }}
-  # {{- if not $selfHeal }}
-  #   {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
-  # {{- end }}
-  # {{- if not $selfHeal }}
-  #   {{- $selfHeal = false }}
-  # {{- end }}
+  {{- $selfHeal := .syncPolicy.selfHeal }}
+  {{- if not $selfHeal }}
+    {{- $selfHeal = $.Values.spec.syncPolicy.selfHeal }}
+  {{- end }}
+  {{- if not $selfHeal }}
+    {{- $selfHeal = false }}
+  {{- end }}
   
   # CreateNamespace default logic: If createNamespace is not set, default to false
   {{- $createNamespace := .createNamespace }}
@@ -99,6 +96,6 @@ spec:
       - CreateNamespace=true
     {{- end }}
     
-  {{- end }}
+    {{- end }}
 
 {{- end }}
