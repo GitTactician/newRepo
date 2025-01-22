@@ -5,7 +5,9 @@ spec:
     repoURL: https://github.com/GitTactician/app-of-apps
     targetRevision: main
   syncPolicy:
-    automated: {}
+      automated:
+        prune: true
+        selfHeal: true
 
 applications:
   - name: sealed-secrets
@@ -14,35 +16,19 @@ applications:
   - name: nginx
     namespace: ingress-nginx
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
+
   - name: cert-manager
     namespace: cert-manager
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
+
   - name: apache-httpd
     namespace: apache-httpd
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
+
   - name: metrics-server
     namespace: kube-system
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
+
   - name: strimzi-kafka-operator
     namespace: kafka
     repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
     appPath: helm/strimzi
     targetRevision: master
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
