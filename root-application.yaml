@@ -15,7 +15,7 @@ applications:
     namespace: kube-system
     # No syncPolicy defined here; should inherit from global syncPolicy
 
-  - name: nginx
+  - name: ingress-nginx
     namespace: ingress-nginx
     source:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
@@ -39,8 +39,6 @@ applications:
     namespace: kube-system
     source:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-      targetRevision: main
-      path: apps
     # No syncPolicy defined here; should inherit from global syncPolicy
 
   - name: strimzi-kafka-operator
