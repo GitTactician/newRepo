@@ -15,8 +15,6 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    syncPolicy: true  # Optional: Override global syncPolicy settings per app
-
   
   - name: nginx
     namespace: ingress-nginx
