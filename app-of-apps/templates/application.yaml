@@ -43,20 +43,19 @@
   {{- end }}
 
   # Prune default logic: If prune is not set, default to false
-  {{- $prune := $.Values.spec.syncPolicy.automated.prune }}
-  # {{- if not $prune }}
-  #   {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
-  # {{- end }}
-
+  {{- $prune := .syncPolicy.automated.prune }}
+  {{- if not $prune }}
+    {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
+  {{- end }}
   {{- if not $prune }}
     {{- $prune = false }}
   {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := $.Values.spec.syncPolicy.automated.selfHeal }}
-  # {{- if not $selfHeal }}
-  #   {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
-  # {{- end }}
+  {{- $selfHeal := .syncPolicy.automated.selfHeal }}
+  {{- if not $selfHeal }}
+    {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
+  {{- end }}
   {{- if not $selfHeal }}
     {{- $selfHeal = false }}
   {{- end }}
