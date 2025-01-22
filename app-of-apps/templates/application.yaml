@@ -19,6 +19,7 @@
     {{- $appSource = $.Values.spec.source }}
   {{- end }}
 
+
   # Set path fallback: First use app-specific path, then use "apps/%s" if not defined
   {{- $appPath := .name }} # Default fallback is app name if path is not specified
   {{- if $appSource.path }}
@@ -50,12 +51,20 @@ spec:
     path: {{ $appPath }}
   {{- if $appSyncPolicy }}
   syncPolicy:
+    {{- if $appSyncPolicy.automated }}
     automated:
       prune: {{ default "false" $appSyncPolicy.automated.prune }}
       selfHeal: {{ default "false" $appSyncPolicy.automated.selfHeal }}
+    {{- end }}
     {{- if $appSyncPolicy.syncOptions }}
     syncOptions:
       - CreateNamespace={{ default "false" $appSyncPolicy.syncOptions.createNamespace }}
+      - DryRun={{ default "false" $appSyncPolicy.syncOptions.dryRun }}
+      - PruneLast={{ default "false" $appSyncPolicy.syncOptions.pruneLast }}
+      - Replace={{ default "false" $appSyncPolicy.syncOptions.replace }}
+      - Validate={{ default "false" $appSyncPolicy.syncOptions.validate }}
+      - AllowEmpty={{ default "false" $appSyncPolicy.syncOptions.allowEmpty }}
+      - Recreate={{ default "false" $appSyncPolicy.syncOptions.recreate }}
     {{- end }}
   {{- end }}
 {{- end }}
