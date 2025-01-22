@@ -37,37 +37,28 @@
   {{- end }}
 
   # Handle syncPolicy with fallback
-  {{- $syncPolicy := .syncPolicy.automated }}
+  {{- $syncPolicy := .syncPolicy }}
   {{- if not $syncPolicy }}
-    {{- $syncPolicy = $.Values.spec.syncPolicy.automated }}
+    {{- $syncPolicy = $.Values.spec.syncPolicy }}
   {{- end }}
   {{- if not $syncPolicy }}
     {{- $syncPolicy = false }}  # Default to false if no syncPolicy
   {{- end }}
 
   # Prune default logic: If prune is not set, default to false
-  {{- $prune := .syncPolicy.automated.prune }}
-  {{- if not $prune }}
-    {{- $prune = $.Values.spec.syncPolicy.automated.prune }}
-  {{- end }}
+  {{- $prune := .prune }}
   {{- if not $prune }}
     {{- $prune = false }}
   {{- end }}
 
   # SelfHeal default logic: If selfHeal is not set, default to false
-  {{- $selfHeal := .syncPolicy.automated.selfHeal }}
-  {{- if not $selfHeal }}
-    {{- $selfHeal = $.Values.spec.syncPolicy.automated.selfHeal }}
-  {{- end }}
+  {{- $selfHeal := .selfHeal }}
   {{- if not $selfHeal }}
     {{- $selfHeal = false }}
   {{- end }}
 
   # CreateNamespace default logic: If createNamespace is not set, default to false
-  {{- $createNamespace := .syncPolicy.syncOptions.createNamespace }}
-  {{- if not $createNamespace }}
-    {{- $createNamespace = $.Values.spec.syncPolicy.syncOptions.createNamespace }}
-  {{- end }}
+  {{- $createNamespace := .createNamespace }}
   {{- if not $createNamespace }}
     {{- $createNamespace = false }}
   {{- end }}
@@ -86,7 +77,7 @@ spec:
     repoURL: {{ $repoURL }}
     targetRevision: {{ $targetRevision }}
     path: {{ $appPath }}
-  {{- if $syncPolicy }}
+  {{- if eq $syncPolicy true }}
   syncPolicy:
     automated:
       prune: {{ $prune }}
