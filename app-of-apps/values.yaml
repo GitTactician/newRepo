@@ -4,14 +4,14 @@ spec:
   source:
     repoURL: https://github.com/GitTactician/app-of-apps
   syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
-      syncOptions:
-        - Validate=false
-        - createNamespace=true
-        - Prune=true
-        - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Validate=false
+      - createNamespace=true
+      - Prune=true
+      - ApplyOutOfSyncOnly=true
 
 applications:
   - name: sealed-secrets
