@@ -71,21 +71,18 @@ spec:
     {{ $key }}: {{ $value }}
     {{- end }}
   {{- if $appSyncPolicy }}
-  syncPolicy:
-    {{- if $appSyncPolicy.automated }}
-    automated:
-      prune: {{ default "false" $appSyncPolicy.automated.prune }}
-      selfHeal: {{ default "false" $appSyncPolicy.automated.selfHeal }}
+syncPolicy:
+  {{- range $key, $value := $appSyncPolicy }}
+  {{- if not (kindIs "map" $value) }}
+  # Regular value (non-map)
+  {{ $key }}: {{ $value }}
+  {{- else }}
+  # Handle nested map
+  {{ $key }}:
+    {{- range $nestedKey, $nestedValue := $value }}
+    {{ $nestedKey }}: {{ $nestedValue }}
     {{- end }}
-    {{- if $appSyncPolicy.syncOptions }}
-    syncOptions:
-      - CreateNamespace={{ default "false" $appSyncPolicy.syncOptions.createNamespace }}
-      - DryRun={{ default "false" $appSyncPolicy.syncOptions.dryRun }}
-      - PruneLast={{ default "false" $appSyncPolicy.syncOptions.pruneLast }}
-      - Replace={{ default "false" $appSyncPolicy.syncOptions.replace }}
-      - Validate={{ default "false" $appSyncPolicy.syncOptions.validate }}
-      - AllowEmpty={{ default "false" $appSyncPolicy.syncOptions.allowEmpty }}
-      - Recreate={{ default "false" $appSyncPolicy.syncOptions.recreate }}
     {{- end }}
+  {{- end }}
   {{- end }}
 {{- end }}
