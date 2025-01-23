@@ -68,9 +68,6 @@ spec:
     repoURL: {{ $appSource.repoURL }}
     targetRevision: {{ default "main" $appSource.targetRevision }}
     path: {{ $appPath }}
-  {{- if $valuesFileExists }}
-    valueFiles:
-      - {{ $valuesFile }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     {{- if $appSyncPolicy.automated }}
