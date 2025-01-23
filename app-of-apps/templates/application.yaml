@@ -66,6 +66,9 @@
   {{- if not $metadata.namespace }}
     {{- $metadata = merge $metadata (dict "namespace" .namespace) }}
   {{- end }}
+  {{- if not $metadata.name }}
+    {{- $metadata = merge $metadata (dict "name" .name) }}
+  {{- end }}
 
 ---
 apiVersion: argoproj.io/v1alpha1
