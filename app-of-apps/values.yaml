@@ -9,44 +9,43 @@ applications:
     namespace: kube-system
     source:
       valueFiles:
-        - https://raw.githubusercontent.com/GitTactician/testValues/main/sealed-secrets/values-app1.yaml
+        - https://raw.githubusercontent.com/GitTactician/testValues/main/sealed-secrets/values-app3.yaml
     # No source defined here; should inherit all from global spec.source
 
-  - name: ingress-nginx
-    namespace: ingress-nginx
-    source:
-      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-      valueFiles:
-        - values.yaml
-    syncPolicy: # Application-specific syncPolicy override
-      automated:
-        prune: false
-        selfHeal: true
-
-  - name: cert-manager
-    namespace: cert-manager
-    # No source defined here; should inherit all from global spec.source
-
-  - name: apache-httpd
-    namespace: apache-httpd
-    syncPolicy: # Application-specific syncPolicy override
-      automated:
-        prune: true
-        selfHeal: true
-
-  - name: metrics-server
-    namespace: kube-system
-    source:
-      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
-    # No syncPolicy defined here; should inherit from global syncPolicy
-
-  - name: strimzi-kafka-operator
-    namespace: kafka
-    source:
-      repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
-      path: helm/strimzi
-      targetRevision: master
-    syncPolicy: # Application-specific syncPolicy override
-      automated:
-        prune: false
-        selfHeal: false
+  # - name: ingress-nginx
+    # namespace: ingress-nginx
+    # source:
+      # repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+      # valueFiles:
+        # - values.yaml
+    # syncPolicy: # Application-specific syncPolicy override
+      # automated:
+        # prune: false
+        # selfHeal: true
+# 
+  # - name: cert-manager
+    # namespace: cert-manager
+# 
+  # - name: apache-httpd
+    # namespace: apache-httpd
+    # syncPolicy: # Application-specific syncPolicy override
+      # automated:
+        # prune: true
+        # selfHeal: true
+# 
+  # - name: metrics-server
+    # namespace: kube-system
+    # source:
+      # repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+    
+  # - name: strimzi-kafka-operator
+    # namespace: kafka
+    # source:
+      # repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/Strimzi
+      # path: helm/strimzi
+      # targetRevision: master
+    # syncPolicy: # Application-specific syncPolicy override
+      # automated:
+        # prune: false
+        # selfHeal: false
+# 
