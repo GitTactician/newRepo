@@ -33,7 +33,10 @@
   {{- end }}
 
 
-  # Set path fallback: First use app-specific path, then use "apps/%s" if not defined
+   # Check for values file in app folder
+  {{- $valuesFile := printf "%s/values.yaml" $appPath }}
+  {{- $valuesFileExists := (hasKey $.Files $valuesFile) }}
+
   
 
   # Handle syncPolicy with two-level fallback
@@ -65,6 +68,9 @@ spec:
     repoURL: {{ $appSource.repoURL }}
     targetRevision: {{ default "main" $appSource.targetRevision }}
     path: {{ $appPath }}
+  {{- if $valuesFileExists }}
+    valueFiles:
+      - {{ $valuesFile }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     {{- if $appSyncPolicy.automated }}
