@@ -15,6 +15,12 @@ spec:
 
 applications:
   - name: sealed-secrets
+    metadata:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      # annotation wave prio 1
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
     namespace: kube-system
     source:
       valueFiles:

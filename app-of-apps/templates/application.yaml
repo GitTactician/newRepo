@@ -19,24 +19,19 @@
     {{- $appSource = $.Values.spec.source }}
   {{- end }}
 
-  {{- $appPath := .name }} # Default fallback is app name if path is not specified
-  {{- if $appSource.path }}
-    {{- $appPath = printf "%s/%s" $appSource.path .name }}
-  {{- else }}
-    {{- $appPath = printf "apps/%s" .name }}  # Default path
-  {{- end }}
-
   {{- range $key, $value := $.Values.spec.source }}
     {{- if not (hasKey $appSource $key) }}
       {{- $appSource = merge $appSource (dict $key $value) }}
     {{- end }}
   {{- end }}
 
+  {{- if not $appSource.path }}
+    {{- $appPath := printf "apps/%s" .name }}
+    {{- $appSource = merge $appSource (dict "path" $appPath) }}
+  {{- end }}
+
   {{- if not $appSource.targetRevision }}
     {{- $appSource = merge $appSource (dict "targetRevision" "main") }}
-  {{- end }}
-  {{- if not $appSource.path }}
-    {{- $appSource = merge $appSource (dict "path" $appPath) }}
   {{- end }}
 
   # Handle syncPolicy with two-level fallback
@@ -53,14 +48,53 @@
     {{- end }}
   {{- end }}
 
+  # add Metadata
+  {{- $metadata := .metadata }}
+  {{- if not $metadata }}
+    {{- $metadata = $.Values.metadata }}
+  {{- end }}
+  {{- if not $metadata }}
+    {{- $metadata = dict "name" .name "namespace" .namespace }}
+  {{- end }}
+
+  {{- range $key, $value := $.Values.metadata }}
+    {{- if not (hasKey $metadata $key) }}
+      {{- $metadata = merge $metadata (dict $key $value) }}
+    {{- end }}
+  {{- end }}
+
+  {{- if not $metadata.namespace }}
+    {{- $metadata = merge $metadata (dict "namespace" .namespace) }}
+  {{- end }}
+
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .name }}
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  {{- range $key, $value := $metadata }}
+  {{- if not (kindIs "map" $value) }}
+  # Regular value (non-map)
+  {{ $key }}: {{ $value }}
+  {{- else }}
+  # Handle nested map
+  {{ $key }}:
+    {{- range $nestedKey, $nestedValue := $value }}
+    {{if eq $nestedKey "finalizers"}}
+    {{ $nestedKey }}:
+      {{- range $nestedValue }}
+      - {{ . }}
+      {{- end }}
+    {{- else if not (kindIs "map" $nestedValue) }}
+    {{ $nestedKey }}: {{ $nestedValue }}
+    {{- else }}
+    {{ $nestedKey }}:
+      {{- range $nestedKey, $nestedValue := $nestedValue }}
+    {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
 spec:
   project: {{ $project }}
   destination:
@@ -68,7 +102,29 @@ spec:
     namespace: {{ .namespace }}
   source:
     {{- range $key, $value := $appSource }}
+    {{- if not (kindIs "map" $value) }}
     {{ $key }}: {{ $value }}
+    {{- else }}
+    {{ $key }}:
+      {{- range $nestedKey, $nestedValue := $value }}
+      {{- if eq $nestedKey "valueFiles" }}
+      {{ $nestedKey }}:
+        {{- range $nestedValue }}
+        - {{ . }}
+        {{- end }}
+      {{- else if not (kindIs "map" $nestedValue) }}
+      {{ $nestedKey }}: {{ $nestedValue }}
+      {{- else }}
+      {{ $nestedKey }}:
+        {{- range $nestedKey, $nestedValue := $nestedValue }}
+        {{- if eq $nestedKey "name"}}
+        - {{ $nestedKey }}: {{ $nestedValue }}
+        {{- else }}
+        {{ $nestedKey }}: {{ $nestedValue }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
     {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
