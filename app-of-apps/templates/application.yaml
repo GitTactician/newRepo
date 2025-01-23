@@ -71,18 +71,18 @@ spec:
     {{ $key }}: {{ $value }}
     {{- end }}
   {{- if $appSyncPolicy }}
-syncPolicy:
-  {{- range $key, $value := $appSyncPolicy }}
-  {{- if not (kindIs "map" $value) }}
-  # Regular value (non-map)
-  {{ $key }}: {{ $value }}
-  {{- else }}
-  # Handle nested map
-  {{ $key }}:
-    {{- range $nestedKey, $nestedValue := $value }}
-    {{ $nestedKey }}: {{ $nestedValue }}
+  syncPolicy:
+    {{- range $key, $value := $appSyncPolicy }}
+    {{- if not (kindIs "map" $value) }}
+    # Regular value (non-map)
+    {{ $key }}: {{ $value }}
+    {{- else }}
+    # Handle nested map
+    {{ $key }}:
+      {{- range $nestedKey, $nestedValue := $value }}
+      {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
+      {{- end }}
     {{- end }}
-    {{- end }}
-  {{- end }}
   {{- end }}
 {{- end }}
