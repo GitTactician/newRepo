@@ -65,8 +65,8 @@ spec:
     namespace: {{ .namespace }}
   source:
     {{- range $key, $value := $appSource }}
-        {{ $key }}: {{ $value }}
-      {{- end }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     {{- if $appSyncPolicy.automated }}
