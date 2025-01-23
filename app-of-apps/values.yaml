@@ -13,6 +13,8 @@ applications:
     namespace: ingress-nginx
     source:
       repoURL: https://cbtw@dev.azure.com/cbtw/DevOps/_git/hms_aws_argocd
+      valueFiles:
+        - values.yaml
     syncPolicy: # Application-specific syncPolicy override
       automated:
         prune: false
