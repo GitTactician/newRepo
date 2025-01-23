@@ -32,6 +32,10 @@
     {{- end }}
   {{- end }}
 
+  {{- if not $appSource.targetRevision }}
+    {{- $appSource = merge $appSource (dict "targetRevision" "main") }}
+  {{- end }}
+
   # Handle syncPolicy with two-level fallback
   {{- $appSyncPolicy := .syncPolicy }}
   {{- if not $appSyncPolicy }}
@@ -60,9 +64,9 @@ spec:
     server: {{ $destinationServer }}
     namespace: {{ .namespace }}
   source:
-    repoURL: {{ $appSource.repoURL }}
-    targetRevision: {{ default "main" $appSource.targetRevision }}
-    path: {{ $appPath }}
+    {{- range $key, $value := $appSource }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     {{- if $appSyncPolicy.automated }}
