@@ -35,6 +35,9 @@
   {{- if not $appSource.targetRevision }}
     {{- $appSource = merge $appSource (dict "targetRevision" "main") }}
   {{- end }}
+  {{- if not $appSource.path }}
+    {{- $appSource = merge $appSource (dict "path" $appPath) }}
+  {{- end }}
 
   # Handle syncPolicy with two-level fallback
   {{- $appSyncPolicy := .syncPolicy }}
