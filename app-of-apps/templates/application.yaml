@@ -32,13 +32,6 @@
     {{- end }}
   {{- end }}
 
-  {{- $valuesFile := .source.valuesFile }}
-  {{- if not $valuesFile }}
-    {{- $valuesFile = $.Values.spec.valuesFile }}
-  {{- end }}
-
-  
-
   # Handle syncPolicy with two-level fallback
   {{- $appSyncPolicy := .syncPolicy }}
   {{- if not $appSyncPolicy }}
@@ -68,8 +61,6 @@ spec:
     repoURL: {{ $appSource.repoURL }}
     targetRevision: {{ default "main" $appSource.targetRevision }}
     path: {{ $appPath }}
-    valueFiles:
-      - {{ default "values.yaml" $valuesFile }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     {{- if $appSyncPolicy.automated }}
