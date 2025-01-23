@@ -71,6 +71,7 @@ spec:
   {{- if $valuesFile }}
     valueFiles:
       - {{ default "values.yaml" $valuesFile }}
+  {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
     {{- if $appSyncPolicy.automated }}
