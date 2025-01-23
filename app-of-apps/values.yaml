@@ -9,7 +9,7 @@ applications:
     namespace: kube-system
     source:
       valueFiles:
-        - values.yaml
+        - https://github.com/GitTactician/testValues/blob/main/sealed-secrets/values-app1.yaml
     # No source defined here; should inherit all from global spec.source
 
   - name: ingress-nginx
