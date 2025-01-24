@@ -85,14 +85,7 @@ spec:
     namespace: {{ $metadata.namespace }}
   source:
     {{- range $key, $value := $appSource }}
-    {{- if kindIs "map" $value }}
-    {{ $key }}:
-      {{- range $nestedKey, $nestedValue := $value }}
-      {{ $nestedKey }}: {{ $nestedValue }}
-      {{- end }}
-    {{- else }}
-    {{ $key }}: {{ $value }}
-    {{- end }}
+    {{- $key }}: {{ $value }}
     {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
