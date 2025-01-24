@@ -19,6 +19,7 @@
     {{ if $appSource.path }}
     {{ $path:= "%s/%s" $appSource.path .name}}
     {{- $appSource = merge $appSource (dict "path" $path) }}
+    {{- end }}
   {{- end }}
 
   {{- $sources := .sources }}
