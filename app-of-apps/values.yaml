@@ -20,7 +20,7 @@ applications:
         app.kubernetes.io/managed-by: argocd
       annotations:
         # this annotation ades wave priority 2
-        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/sync-wave: "1"
     source:
       repoURL: https://github.com/GitTactician/newRepo.git
       targetRevision: main
@@ -39,7 +39,7 @@ applications:
         app.kubernetes.io/managed-by: argocd
       annotations:
         # this annotation ades wave priority 2
-        argocd.argoproj.io/sync-wave: "1"
+        argocd.argoproj.io/sync-wave: "0"
     source:
       repoURL: https://github.com/GitTactician/app-of-apps.git
       targetRevision: main
