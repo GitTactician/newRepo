@@ -1,8 +1,6 @@
 spec:
   destination:
     server: https://kubernetes.default.svc
-  source:
-    repoURL: https://github.com/GitTactician/newRepo.git
   syncPolicy:
     automated:
       prune: true
@@ -11,20 +9,14 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    source:
-      repoURL: https://github.com/GitTactician/newRepo.git
-      targetRevision: main
-      path: apps/sealed-secrets
-      valuesFiles:
-        - https://raw.githubusercontent.com/GitTactician/testValues/main/sealed-secrets/values-app3.yaml
+    sources:
+      - repoURL: https://github.com/GitTactician/testValues.git
+        targetRevision: main
+        path: apps/sealed-secrets
     syncPolicy:
       automated:
         prune: true
         selfHeal: true
-    sources:
-      - repoURL: https://github.com/GitTactician/testValues.git
-        targetRevision: main
-        path: sealed-secrets/values-app3.yaml
 
   - name: cert-manager
     namespace: cert-manager
