@@ -5,7 +5,6 @@
     {{- $destinationServer = $.Values.spec.destination.server }}
   {{- end }}
 
-  # Add project
   {{- $project := .project }}
   {{- if not $project }}
     {{- $project = $.Values.spec.project }}
@@ -34,7 +33,6 @@
     {{- $appSource = merge $appSource (dict "targetRevision" "main") }}
   {{- end }}
 
-  # Handle syncPolicy with two-level fallback
   {{- $appSyncPolicy := .syncPolicy }}
   {{- if not $appSyncPolicy }}
     {{- $appSyncPolicy = $.Values.spec.syncPolicy }}
@@ -48,13 +46,9 @@
     {{- end }}
   {{- end }}
 
-  # add Metadata
   {{- $metadata := .metadata }}
   {{- if not $metadata }}
     {{- $metadata = $.Values.metadata }}
-  {{- end }}
-  {{- if not $metadata }}
-    {{- $metadata = dict "name" .name "namespace" .namespace }}
   {{- end }}
 
   {{- range $key, $value := $.Values.metadata }}
@@ -64,7 +58,7 @@
   {{- end }}
 
   {{- if not $metadata.namespace }}
-    {{- $metadata = merge $metadata (dict "namespace" .namespace) }}
+    {{- $metadata = merge $metadata (dict "namespace" "argocd") }}
   {{- end }}
   {{- if not $metadata.name }}
     {{- $metadata = merge $metadata (dict "name" .name) }}
@@ -74,97 +68,43 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  {{- range $key, $value := $metadata }} #1
-  {{- if not (kindIs "map" $value) }} #2
-  # Regular value (non-map)
+  {{- range $key, $value := $metadata }}
+  {{- if not (kindIs "map" $value) }}
   {{ $key }}: {{ $value }}
   {{- else }}
-  # Handle nested map
   {{ $key }}:
-    {{- range $nestedKey, $nestedValue := $value }} #4
-    {{if eq $nestedKey "finalizers"}} #5
-    {{ $nestedKey }}:
-      {{- range $nestedValue }} #6
-      - {{ . }}
-      {{- end }} #5
-    {{- else }}
-    {{- if not (kindIs "map" $nestedValue) }} #7
+    {{- range $nestedKey, $nestedValue := $value }}
     {{ $nestedKey }}: {{ $nestedValue }}
-    {{- else }}
-    {{ $nestedKey }}:
-      {{- range $nestedKey, $nestedValue := $nestedValue }} #8
-    {{ $nestedKey }}: {{ $nestedValue }}
-      {{- end }} #7
-    {{- end }} #6
-    {{- end }} #5
-    {{- end }} #4
-    {{- end }} #3
-  {{- end }} #2
-  {{- end }} #1
+    {{- end }}
+  {{- end }}
+  {{- end }}
 spec:
   project: {{ $project }}
   destination:
     server: {{ $destinationServer }}
     namespace: {{ .namespace }}
   source:
-    {{- range $key, $value := $appSource }} #1
-    {{- if not (kindIs "map" $value) }} #2
-    {{ $key }}: {{ $value }}
-    {{- else }}
-    {{ $key }}:
-      {{- range $nestedKey, $nestedValue := $value }} #3
-      {{- if eq $nestedKey "valueFiles" }} #4
-      {{ $nestedKey }}:
-        {{- range $nestedValue }} #5
-        - {{ . }}
-        {{- end }} #4
-      {{- else }} 
-      # {{- if not (kindIs "map" $nestedValue) }} #5
-      {{ $nestedKey }}: {{ $nestedValue }}
-      {{- end}} #3
-      {{- end }} #2
-      {{- end }} #1
-      # {{- else }}
-      # {{ $nestedKey }}:
-        # {{- range $nestedKey, $nestedValue := $nestedValue }} #6
-        # {{- if eq $nestedKey "name"}} #7
-        # - {{ $nestedKey }}: {{ $nestedValue }}
-        # {{- else }} 
-        # {{ $nestedKey }}: {{ $nestedValue }}
-        # {{- end }} #6
-        # {{- end }} #5
-      # {{- end }} #4
-      # {{ $nestedKey }}:
-        # {{- range $nestedValue }} #5
-      #  - {{ . }}
-        # {{- end }} #4
-      # {{- else if not (kindIs "map" $nestedValue) }}
-      # {{ $nestedKey }}: {{ $nestedValue }}
-      # {{- else }}
-      # {{ $nestedKey }}:
-        # {{- range $nestedKey, $nestedValue := $nestedValue }}
-        # {{- if eq $nestedKey "name"}}
-        # - {{ $nestedKey }}: {{ $nestedValue }}
-        # {{- else }}
-        # {{ $nestedKey }}: {{ $nestedValue }}
-        # {{- end }}
-        # {{- end }}
-      # {{- end }}
-    # {{- end }}
-    # {{- end }}
-  {{- if $appSyncPolicy }}
-  syncPolicy:
-    {{- range $key, $value := $appSyncPolicy }}
+    {{- range $key, $value := $appSource }}
     {{- if not (kindIs "map" $value) }}
-    # Regular value (non-map)
     {{ $key }}: {{ $value }}
     {{- else }}
-    # Handle nested map
     {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
       {{ $nestedKey }}: {{ $nestedValue }}
       {{- end }}
+    {{- end }}
+    {{- end }}
+  {{- if $appSyncPolicy }}
+  syncPolicy:
+    {{- range $key, $value := $appSyncPolicy }}
+    {{- if not (kindIs "map" $value) }}
+    {{ $key }}: {{ $value }}
+    {{- else }}
+    {{ $key }}:
+      {{- range $nestedKey, $nestedValue := $value }}
+      {{ $nestedKey }}: {{ $nestedValue }}
       {{- end }}
+    {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
