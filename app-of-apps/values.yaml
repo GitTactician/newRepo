@@ -11,6 +11,10 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
+    source:
+      repoURL: https://github.com/GitTactician/newRepo.git
+      targetRevision: main
+      path: apps/sealed-secrets
     syncPolicy:
       automated:
         prune: true
