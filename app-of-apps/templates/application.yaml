@@ -164,7 +164,11 @@ spec:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
         {{- range $nestedKey, $nestedValue := $value }}
+        {{- if eq (printf "%s" $nestedKey "repoURL") }}
+        - {{ $nestedKey }}: {{ $nestedValue }}
+        {{- else }}
         {{ $nestedKey }}: {{ $nestedValue }}
+        {{- end }}
         {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
       {{ $nestedKey }}:
