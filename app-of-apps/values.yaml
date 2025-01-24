@@ -14,6 +14,7 @@ applications:
     metadata:
       annotations:
         argocd.argoproj.io/sync-wave: "-9"
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     source:
       repoURL: https://github.com/GitTactician/newRepo.git
       targetRevision: main
@@ -30,6 +31,7 @@ applications:
     metadata:
       annotations:
         argocd.argoproj.io/sync-wave: "-8"
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     source:
       repoURL: https://github.com/GitTactician/app-of-apps.git
       targetRevision: main
