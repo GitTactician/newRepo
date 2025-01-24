@@ -15,7 +15,7 @@
 
   {{- $appSource := .source }}
   {{- if not $appSource }}
-    {{- $appSource = $.Values.spec.source }}
+    {{- $appSource = printf "%s/%s" $.Values.spec.source .name }}
   {{- end }}
 
   {{- range $key, $value := $.Values.spec.source }}
@@ -85,7 +85,14 @@ spec:
     namespace: {{ $metadata.namespace }}
   source:
     {{- range $key, $value := $appSource }}
-    {{- $key }}: {{ $value }}
+    {{- if kindIs "map" $value }}
+    {{ $key }}:
+      {{- range $nestedKey, $nestedValue := $value }}
+      {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
+    {{- else }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
     {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
