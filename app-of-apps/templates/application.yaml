@@ -48,10 +48,10 @@
 
   {{- $metadata := .metadata }}
   {{- if not $metadata }}
-    {{- $metadata = $.Values.metadata }}
+    {{- $metadata = $.Values.spec.metadata }}
   {{- end }}
 
-  {{- range $key, $value := $.Values.metadata }}
+  {{- range $key, $value := $.Values.spec.metadata }}
     {{- if not (hasKey $metadata $key) }}
       {{- $metadata = merge $metadata (dict $key $value) }}
     {{- end }}
@@ -74,7 +74,14 @@ metadata:
   {{- else }}
   {{ $key }}:
     {{- range $nestedKey, $nestedValue := $value }}
-    {{ $nestedKey }}: {{ $nestedValue }}
+    {{- if not (kindIs "map" $value) }}
+    {{ $key }}: {{ $value }}
+    {{- else }}
+    {{ $key }}:
+      {{- range $nestedKey, $nestedValue := $value }}
+      {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
+    {{- end }}
     {{- end }}
   {{- end }}
   {{- end }}
@@ -90,7 +97,14 @@ spec:
     {{- else }}
     {{ $key1 }}:
       {{- range $nestedKey1, $nestedValue1 := $value1 }}
-      {{ $nestedKey1 }}: {{ $nestedValue1 }}
+      {{- if not (kindIs "map" $value1) }}
+      {{ $key1 }}: {{ $value1 }}
+      {{- else }}
+      {{ $key1 }}:
+        {{- range $nestedKey1, $nestedValue1 := $value1 }}
+        {{ $nestedKey1 }}: {{ $nestedValue1 }}
+        {{- end }}
+      {{- end }}
       {{- end }}
     {{- end }}
     {{- end }}
@@ -102,7 +116,15 @@ spec:
     {{- else }}
     {{ $key2 }}:
       {{- range $nestedKey2, $nestedValue2 := $value2 }}
-      {{ $nestedKey2 }}: {{ $nestedValue2 }}
+      {{- if not (kindIs "map" $value2) }}
+      {{ $key2 }}: {{ $value2 }}
+      {{- else }}
+      {{ $key2 }}:
+        {{- range $nestedKey2, $nestedValue2 := $value2 }}
+        {{ $nestedKey2 }}: {{ $nestedValue2 }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
       {{- end }}
     {{- end }}
     {{- end }}
