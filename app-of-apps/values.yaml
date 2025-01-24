@@ -7,10 +7,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - Validate=false
-      - createNamespace=true
-      - applyOutOfSyncOnly=true
 
 applications:
   - name: sealed-secrets
