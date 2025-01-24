@@ -55,8 +55,8 @@
     {{ $appSource = merge $appSource (dict "targetRevision" "main") }}
     {{- end }}
     {{- if not $appSource.path }}
-    {{ $path:= "apps/%s" $appSource.path .name}}
-    {{- $appSource = merge $appSource (dict "path" $path) }}
+    {{ $path1:= "apps/%s" .name}}
+    {{- $appSource = merge $appSource (dict "path" $path1) }}
     {{- end }}
   {{- end }}
 
