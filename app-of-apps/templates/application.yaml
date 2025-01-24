@@ -74,7 +74,7 @@
   {{- end }}
 
   {{- $sources := .sources }}
-  {{ - if not $sources }}
+  {{- if not $sources }}
   {{- $sources = $.Values.spec.sources }}
   {{- end }}
 
