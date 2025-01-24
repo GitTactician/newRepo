@@ -181,11 +181,7 @@ spec:
       - {{ $item }}
       {{- end }}
     {{- else }}
-    {{- if eq $key "repoURL"}}    
-    - {{ $key }}: {{ $value }}
-    {{- else }}
     {{ $key }}: {{ $value }}
-    {{- end }}
     {{- end }}
     {{- end }} 
   {{- end }}
@@ -213,11 +209,7 @@ spec:
       - {{ $item }}
       {{- end }}
     {{- else }}
-    {{- if eq $key "group"}}    
-    - {{ $key }}: {{ $value }}
-    {{- else }}
     {{ $key }}: {{ $value }}
-    {{- end }}
     {{- end }}
     {{- end }}
   {{- end }}
