@@ -15,7 +15,7 @@
 
   {{- $appSource := .source }}
   {{- if not $appSource }}
-    {{- $appSource = printf "%s/%s" $.Values.spec.source .name }}
+    {{- $appSource = $.Values.spec.source }}
   {{- end }}
 
   {{- range $key, $value := $.Values.spec.source }}
