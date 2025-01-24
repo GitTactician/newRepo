@@ -121,7 +121,24 @@ spec:
     {{- if kindIs "map" $value }}
     {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
+      {{- if kindIs "map" $nestedValue }}
+      {{ $nestedKey }}:
+        {{- range $nestedKey, $nestedValue := $value }}
+        {{ $nestedKey }}: {{ $nestedValue }}
+        {{- end }}
+      {{- else if kindIs "slice" $nestedValue }}
+      {{ $nestedKey }}:
+        {{- range $index1, $item1 := $nestedValue }}
+        - {{ $item1 }}
+        {{- end }}
+      {{- else }}
       {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
+      {{- end }}
+    {{- else if kindIs "slice" $value }}
+    {{ $key }}:
+      {{- range $index, $item := $value }}
+      - {{ $item }}
       {{- end }}
     {{- else }}
     {{ $key }}: {{ $value }}
