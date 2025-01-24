@@ -2,7 +2,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://github.com/GitTactician/app-of-apps
+    repoURL: https://github.com/GitTactician/newRepo.git
   syncPolicy:
     automated:
       prune: true
@@ -22,7 +22,7 @@ applications:
   
   - name: cert-manager
     namespace: cert-manager
-    
+
     # No source defined here; should inherit all from global spec.source
 
   # - name: ingress-nginx
