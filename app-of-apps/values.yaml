@@ -19,6 +19,10 @@ applications:
       automated:
         prune: true
         selfHeal: true
+  
+  - name: cert-manager
+    namespace: cert-manager
+    
     # No source defined here; should inherit all from global spec.source
 
   # - name: ingress-nginx
