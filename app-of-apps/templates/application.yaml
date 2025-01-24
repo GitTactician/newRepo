@@ -171,7 +171,11 @@ spec:
         - {{ $item1 }}
         {{- end }}
       {{- else }}
+      {{- if eq $nestedKey "repoURL"}}
+      - {{ $nestedKey }}: {{ $nestedValue }}
+      {{- else }}
       {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
       {{- end }}
       {{- end }}
     {{- else if kindIs "slice" $value }}
@@ -203,7 +207,11 @@ spec:
         - {{ $item1 }}
         {{- end }}
       {{- else }}
+      {{- if eq $nestedKey "group"}}
+      - {{ $nestedKey }}: {{ $nestedValue }}
+      {{- else }}
       {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
       {{- end }}
       {{- end }}
     {{- else if kindIs "slice" $value }}
