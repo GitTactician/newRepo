@@ -161,10 +161,8 @@ spec:
   sources:
     {{- range $key, $value := $sources }}
     {{- if kindIs "map" $value }}
-    {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
-      {{ $nestedKey }}:
         {{- range $nestedKey, $nestedValue := $value }}
         {{ $nestedKey }}: {{ $nestedValue }}
         {{- end }}
@@ -195,10 +193,8 @@ spec:
   ignoreDifferences:
     {{- range $key, $value := $ignoreDifferences }}
     {{- if kindIs "map" $value }}
-    {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
-      {{ $nestedKey }}:
         {{- range $nestedKey, $nestedValue := $value }}
         {{ $nestedKey }}: {{ $nestedValue }}
         {{- end }}
