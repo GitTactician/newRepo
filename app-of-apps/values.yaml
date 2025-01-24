@@ -15,6 +15,8 @@ applications:
       repoURL: https://github.com/GitTactician/newRepo.git
       targetRevision: main
       path: apps/sealed-secrets
+      valuesFiles:
+        - apps/sealed-secrets/values.yaml
     syncPolicy:
       automated:
         prune: true

@@ -16,6 +16,9 @@
   {{- $appSource := .source }}
   {{- if not $appSource }}
     {{- $appSource = $.Values.spec.source }}
+    {{ if $appSource.path }}
+    {{- $appSource.path = printf "%s/%s" $appSource.path .name }}
+    {{- end }}
   {{- end }}
 
   {{- range $key, $value := $.Values.spec.source }}
