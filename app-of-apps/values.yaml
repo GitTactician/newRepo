@@ -11,10 +11,10 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    metadata:
-      #add argocd annotation sync wave prio 1
-      annotations:
-        argocd.argoproj.io/sync-wave: "1"
+    # metadata:
+      # add argocd annotation sync wave prio 1
+      # annotations:
+        # argocd.argoproj.io/sync-wave: "1"
     syncPolicy:
       automated:
         prune: true
