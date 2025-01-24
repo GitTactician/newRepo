@@ -22,8 +22,6 @@ applications:
     namespace: cert-manager
     source:
       repoURL: https://github.com/GitTactician/app-of-apps.git
-      targetRevision: main
-      path: apps/cert-manager
     ignoreDifferences:
       - group: apps
         kind: Deployment
