@@ -160,14 +160,21 @@ spec:
   sources:
     {{- range $key, $value := $sources }}
     {{- if kindIs "map" $value }}
+      {{- if not (eq $key "0") }}
+      {{ $key }}:
+      {{- end }}
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
+      {{- if not (eq $key "0") }}
       {{ $nestedKey }}:
+      {{- end }}
         {{- range $nestedKey, $nestedValue := $value }}
         {{ $nestedKey }}: {{ $nestedValue }}
         {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
+      {{- if not (eq $key "0") }}
       {{ $nestedKey }}:
+      {{- end }}
         {{- range $index1, $item1 := $nestedValue }}
         - {{ $item1 }}
         {{- end }}
@@ -176,7 +183,9 @@ spec:
       {{- end }}
       {{- end }}
     {{- else if kindIs "slice" $value }}
+    {{- if not (eq $key "0") }}
     {{ $key }}:
+    {{- end }}
       {{- range $index, $item := $value }}
       - {{ $item }}
       {{- end }}
@@ -193,15 +202,21 @@ spec:
   ignoreDifferences:
     {{- range $key, $value := $ignoreDifferences }}
     {{- if kindIs "map" $value }}
+    {{- if not (eq $key "0") }}
     {{ $key }}:
+    {{- end }}
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
+      {{- if not (eq $key "0") }}
       {{ $nestedKey }}:
+      {{- end }}
         {{- range $nestedKey, $nestedValue := $value }}
         {{ $nestedKey }}: {{ $nestedValue }}
         {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
+      {{- if not (eq $key "0") }}
       {{ $nestedKey }}:
+      {{- end }}
         {{- range $index1, $item1 := $nestedValue }}
         - {{ $item1 }}
         {{- end }}
@@ -210,7 +225,9 @@ spec:
       {{- end }}
       {{- end }}
     {{- else if kindIs "slice" $value }}
+    {{- if not (eq $key "0") }}
     {{ $key }}:
+    {{- end }}
       {{- range $index, $item := $value }}
       - {{ $item }}
       {{- end }}
