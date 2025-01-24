@@ -12,7 +12,7 @@ applications:
     sources:
       - repoURL: https://github.com/GitTactician/testValues.git
         targetRevision: main
-        path: apps/sealed-secrets
+        path: sealed-secrets
     syncPolicy:
       automated:
         prune: true
