@@ -17,8 +17,8 @@
   {{- if not $appSource }}
     {{- $appSource = $.Values.spec.source }}
     {{ if $appSource.path }}
-      {{ $path1 := printf "%s/%s" $appSource.path .name }}
-      {{- $appSource = merge $appSource (dict "path" $path1) }}
+    {{ $path:= "%s/%s" $appSource.path .name}}
+    {{- $appSource = merge $appSource (dict "path" $path) }}
     {{- end }}
   {{- end }}
 
@@ -165,11 +165,7 @@ spec:
       {{- if kindIs "map" $nestedValue }}
       {{ $nestedKey }}:
         {{- range $nestedKey, $nestedValue := $value }}
-        {{- if eq $nestedKey "repoURL"}}
-        - {{ $nestedKey }}: {{ $nestedValue }}
-        {{- else }}
         {{ $nestedKey }}: {{ $nestedValue }}
-        {{- end }}
         {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
       {{ $nestedKey }}:
@@ -186,7 +182,11 @@ spec:
       - {{ $item }}
       {{- end }}
     {{- else }}
+    {{- if eq $key "repoURL"}}    
+    - {{ $key }}: {{ $value }}
+    {{- else }}
     {{ $key }}: {{ $value }}
+    {{- end }}
     {{- end }}
     {{- end }} 
   {{- end }}
@@ -197,11 +197,7 @@ spec:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
         {{- range $nestedKey, $nestedValue := $value }}
-        {{- if eq $nestedKey "group"}}
         - {{ $nestedKey }}: {{ $nestedValue }}
-        {{- else }}
-        {{ $nestedKey }}: {{ $nestedValue }}
-        {{- end }}
         {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
         {{- range $index1, $item1 := $nestedValue }}
@@ -217,7 +213,11 @@ spec:
       - {{ $item }}
       {{- end }}
     {{- else }}
+    {{- if eq $key "group"}}    
+    - {{ $key }}: {{ $value }}
+    {{- else }}
     {{ $key }}: {{ $value }}
+    {{- end }}
     {{- end }}
     {{- end }}
   {{- end }}
