@@ -84,25 +84,25 @@ spec:
     server: {{ $destinationServer }}
     namespace: {{ .namespace }}
   source:
-    {{- range $key, $value := $appSource }}
-    {{- if not (kindIs "map" $value) }}
-    {{ $key }}: {{ $value }}
+    {{- range $key1, $value1 := $appSource }}
+    {{- if not (kindIs "map" $value1) }}
+    {{ $key1 }}: {{ $value1 }}
     {{- else }}
-    {{ $key }}:
-      {{- range $nestedKey, $nestedValue := $value }}
-      {{ $nestedKey }}: {{ $nestedValue }}
+    {{ $key1 }}:
+      {{- range $nestedKey1, $nestedValue1 := $value1 }}
+      {{ $nestedKey1 }}: {{ $nestedValue1 }}
       {{- end }}
     {{- end }}
     {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
-    {{- range $key, $value := $appSyncPolicy }}
-    {{- if not (kindIs "map" $value) }}
-    {{ $key }}: {{ $value }}
+    {{- range $key2, $value2 := $appSyncPolicy }}
+    {{- if not (kindIs "map" $value2) }}
+    {{ $key2 }}: {{ $value2 }}
     {{- else }}
-    {{ $key }}:
-      {{- range $nestedKey, $nestedValue := $value }}
-      {{ $nestedKey }}: {{ $nestedValue }}
+    {{ $key2 }}:
+      {{- range $nestedKey2, $nestedValue2 := $value2 }}
+      {{ $nestedKey2 }}: {{ $nestedValue2 }}
       {{- end }}
     {{- end }}
     {{- end }}

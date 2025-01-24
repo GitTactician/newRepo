@@ -7,33 +7,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - Validate=false
-      - createNamespace=true
-      - Prune=true
-      - ApplyOutOfSyncOnly=true
 
 applications:
   - name: sealed-secrets
-    metadata:
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      # annotation wave prio 1
-      annotations:
-        argocd.argoproj.io/sync-wave: "1"
     namespace: kube-system
-    source:
-      valueFiles:
-        - https://raw.githubusercontent.com/GitTactician/testValues/main/sealed-secrets/values-app3.yaml
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
-      syncOptions:
-        - Validate=false
-        - createNamespace=true
-        - Prune=true
-        - ApplyOutOfSyncOnly=true
     # No source defined here; should inherit all from global spec.source
 
   # - name: ingress-nginx
