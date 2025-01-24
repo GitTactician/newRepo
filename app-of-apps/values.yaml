@@ -11,10 +11,6 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    metadata:
-      annotations:
-        argocd.argoproj.io/sync-wave: "-9"
-        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     source:
       repoURL: https://github.com/GitTactician/newRepo.git
       targetRevision: main
@@ -25,15 +21,20 @@ applications:
       automated:
         prune: true
         selfHeal: true
+    sources:
+      - repoURL: https://github.com/GitTactician/testValues.git
+        targetRevision: main
+        path: sealed-secrets/values-app3.yaml
 
   - name: cert-manager
     namespace: cert-manager
-    metadata:
-      annotations:
-        argocd.argoproj.io/sync-wave: "-8"
-        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     source:
       repoURL: https://github.com/GitTactician/app-of-apps.git
       targetRevision: main
       path: apps/cert-manager
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jsonPointers:
+          - /spec/replicas
     # Inherits source from spec.source
