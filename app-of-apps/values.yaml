@@ -15,6 +15,9 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-wave: "-9"
     source:
       repoURL: https://github.com/GitTactician/newRepo.git
       targetRevision: main
@@ -28,6 +31,9 @@ applications:
 
   - name: cert-manager
     namespace: cert-manager
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-wave: "-8"
     source:
       repoURL: https://github.com/GitTactician/app-of-apps.git
       targetRevision: main
