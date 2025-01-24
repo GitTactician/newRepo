@@ -19,12 +19,11 @@
     {{ if $appSource.path }}
     {{ $path:= "%s/%s" $appSource.path .name}}
     {{- $appSource = merge $appSource (dict "path" $path) }}
-    {{- else }}
-    {{- $sources := .sources }}
+  {{- end }}
+
+  {{- $sources := .sources }}
     {{- if not $sources }}
     {{- $sources = $.Values.spec.sources }}
-    {{- end }}
-    {{- end }}
   {{- end }}
 
   {{- $appSyncPolicy := .syncPolicy }}
