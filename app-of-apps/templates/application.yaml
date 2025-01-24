@@ -17,7 +17,8 @@
   {{- if not $appSource }}
     {{- $appSource = $.Values.spec.source }}
     {{ if $appSource.path }}
-    {{- $appSource.path = printf "%s/%s" $appSource.path .name }}
+    {{ $path:= "%s/%s" $appSource.path .name}}
+    {{- $appSource.path = merge $appSource (dict "path" $path) }}
     {{- end }}
   {{- end }}
 
