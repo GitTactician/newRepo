@@ -160,10 +160,16 @@ spec:
   sources:
     {{- range $key, $value := $sources }}
     {{- if kindIs "map" $value }}
+      {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
+      {{ $nestedKey }}:
         {{- range $nestedKey, $nestedValue := $value }}
+        {{- if eq $nestedKey "repoURL"}}
+        - {{ $nestedKey }}: {{ $nestedValue }}
+        {{- else }}
         {{ $nestedKey }}: {{ $nestedValue }}
+        {{- end }}
         {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
       {{ $nestedKey }}:
@@ -171,11 +177,7 @@ spec:
         - {{ $item1 }}
         {{- end }}
       {{- else }}
-      {{- if eq $nestedKey "repoURL"}}
-      - {{ $nestedKey }}: {{ $nestedValue }}
-      {{- else }}
       {{ $nestedKey }}: {{ $nestedValue }}
-      {{- end }}
       {{- end }}
       {{- end }}
     {{- else if kindIs "slice" $value }}
@@ -184,11 +186,7 @@ spec:
       - {{ $item }}
       {{- end }}
     {{- else }}
-    {{- if eq $key "repoURL"}}    
-    - {{ $key }}: {{ $value }}
-    {{- else }}
     {{ $key }}: {{ $value }}
-    {{- end }}
     {{- end }}
     {{- end }} 
   {{- end }}
@@ -199,19 +197,18 @@ spec:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
         {{- range $nestedKey, $nestedValue := $value }}
+        {{- if eq $nestedKey "group"}}
+        - {{ $nestedKey }}: {{ $nestedValue }}
+        {{- else }}
         {{ $nestedKey }}: {{ $nestedValue }}
         {{- end }}
+        {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
-      {{ $nestedKey }}:
         {{- range $index1, $item1 := $nestedValue }}
         - {{ $item1 }}
         {{- end }}
       {{- else }}
-      {{- if eq $nestedKey "group"}}
       - {{ $nestedKey }}: {{ $nestedValue }}
-      {{- else }}
-      {{ $nestedKey }}: {{ $nestedValue }}
-      {{- end }}
       {{- end }}
       {{- end }}
     {{- else if kindIs "slice" $value }}
@@ -220,11 +217,7 @@ spec:
       - {{ $item }}
       {{- end }}
     {{- else }}
-    {{- if eq $key "group"}}    
-    - {{ $key }}: {{ $value }}
-    {{- else }}
     {{ $key }}: {{ $value }}
-    {{- end }}
     {{- end }}
     {{- end }}
   {{- end }}
