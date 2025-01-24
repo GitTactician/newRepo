@@ -70,12 +70,12 @@
 
   {{- $ignoreDifferences := .ignoreDifferences}}
   {{- if not $ignoreDifferences }}
-  {{- $ignoreDifferences = $Values.spec.ignoreDifferences }}
+  {{- $ignoreDifferences = $.Values.spec.ignoreDifferences }}
   {{- end }}
 
   {{- $sources := .sources }}
   {{ - if not $sources }}
-  {{- $sources = $Values.spec.sources }}
+  {{- $sources = $.Values.spec.sources }}
   {{- end }}
 
 
