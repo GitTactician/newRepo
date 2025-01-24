@@ -67,16 +67,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  {{- range $key, $value := $metadata }}
-  {{- if kindIs "map" $value }}
-  {{ $key }}:
-    {{- range $nestedKey, $nestedValue := $value }}
-    {{ $nestedKey }}: {{ $nestedValue }}
-    {{- end }}
-  {{- else }}
-  {{ $key }}: {{ $value }}
-  {{- end }}
-  {{- end }}
+  {{- $metadata | toYaml | nindent 2 }}
 spec:
   project: {{ $project }}
   destination:
