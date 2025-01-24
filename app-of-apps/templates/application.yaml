@@ -130,6 +130,7 @@ spec:
   syncPolicy:
     {{- range $key, $value := $appSyncPolicy }}
     {{- if kindIs "map" $value }}
+    {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
       {{ $nestedKey }}:
@@ -160,7 +161,7 @@ spec:
   sources:
     {{- range $key, $value := $sources }}
     {{- if kindIs "map" $value }}
-      {{ $key }}:
+    {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
       {{ $nestedKey }}:
@@ -184,7 +185,7 @@ spec:
     {{- else }}
     {{- if eq $key "repoURL"}}    
     - {{ $key }}: {{ $value }}
-    {{- else }}
+    {{ - else }}
     {{ $key }}: {{ $value }}
     {{- end }}
     {{- end }}
@@ -194,17 +195,20 @@ spec:
   ignoreDifferences:
     {{- range $key, $value := $ignoreDifferences }}
     {{- if kindIs "map" $value }}
+    {{ $key }}:
       {{- range $nestedKey, $nestedValue := $value }}
       {{- if kindIs "map" $nestedValue }}
+      {{ $nestedKey }}:
         {{- range $nestedKey, $nestedValue := $value }}
-        - {{ $nestedKey }}: {{ $nestedValue }}
+        {{ $nestedKey }}: {{ $nestedValue }}
         {{- end }}
       {{- else if kindIs "slice" $nestedValue }}
+      {{ $nestedKey }}:
         {{- range $index1, $item1 := $nestedValue }}
         - {{ $item1 }}
         {{- end }}
       {{- else }}
-      - {{ $nestedKey }}: {{ $nestedValue }}
+      {{ $nestedKey }}: {{ $nestedValue }}
       {{- end }}
       {{- end }}
     {{- else if kindIs "slice" $value }}
@@ -215,7 +219,7 @@ spec:
     {{- else }}
     {{- if eq $key "group"}}    
     - {{ $key }}: {{ $value }}
-    {{- else }}
+    {{ - else }}
     {{ $key }}: {{ $value }}
     {{- end }}
     {{- end }}
