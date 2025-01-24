@@ -1,8 +1,19 @@
 {{- range .Values.applications }}
 
-  {{- $destinationServer := .destinationServer }}
-  {{- if not $destinationServer }}
-    {{- $destinationServer = $.Values.spec.destination.server }}
+  {{- $destination := .destination }}
+  {{- if not $destination }}
+    {{- $destination = $.Values.spec.destination }}
+  {{- end }}
+  {{- range $key, $value := $.Values.spec.destination }}
+    {{- if not (hasKey $destination $key) }}
+      {{- $destination = merge $destination (dict $key $value) }}
+    {{- end }}
+  {{- end }}
+
+  {{- if .namespace }}
+  {{- if not $destination.namespace }}
+    {{- $destination = merge $destination (dict "namespace" .namespace) }}
+  {{- end }}
   {{- end }}
 
   {{- $project := .project }}
@@ -20,11 +31,23 @@
     {{ $path:= "%s/%s" $appSource.path .name}}
     {{- $appSource = merge $appSource (dict "path" $path) }}
     {{- end }}
+  {{- else }}
+    {{- range $key, $value := $.Values.spec.source }}
+      {{- if not (hasKey $appSource $key) }}
+        {{- $appSource = merge $appSource (dict $key $value) }}
+      {{- end }}
+    {{- end }}
   {{- end }}
 
   {{- $sources := .sources }}
     {{- if not $sources }}
     {{- $sources = $.Values.spec.sources }}
+  {{- else}}
+    {{- range $source := $.Values.spec.sources }}
+      {{- if not (contains $sources $source) }}
+        {{- $sources = append $sources $source }}
+      {{- end }}
+    {{- end }}
   {{- end }}
 
   {{- $appSyncPolicy := .syncPolicy }}
@@ -71,8 +94,7 @@ metadata:
 spec:
   project: {{ $project }}
   destination:
-    server: {{ $destinationServer }}
-    namespace: {{ .namespace }}
+    {{ $destination | toYaml | nindent 4 }}
   {{- if $appSource }}
   source:
     {{ $appSource | toYaml | nindent 4 }}
