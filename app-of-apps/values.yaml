@@ -11,12 +11,18 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
+    metadata:
+      labels:
+        app.kubernetes.io/managed-by: argocd
+      annotations:
+        # this annotation ades wave priority 2
+        argocd.argoproj.io/sync-wave: "2"
     source:
       repoURL: https://github.com/GitTactician/newRepo.git
       targetRevision: main
       path: apps/sealed-secrets
       valuesFiles:
-        - apps/sealed-secrets/values.yaml
+        - https://raw.githubusercontent.com/GitTactician/testValues/main/sealed-secrets/values-app3.yaml
     syncPolicy:
       automated:
         prune: true
@@ -24,4 +30,14 @@ applications:
 
   - name: cert-manager
     namespace: cert-manager
+    metadata:
+      labels:
+        app.kubernetes.io/managed-by: argocd
+      annotations:
+        # this annotation ades wave priority 2
+        argocd.argoproj.io/sync-wave: "1"
+    source:
+      repoURL: https://github.com/GitTactician/app-of-apps.git
+      targetRevision: main
+      path: apps/cert-manager
     # Inherits source from spec.source
