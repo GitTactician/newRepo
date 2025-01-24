@@ -26,10 +26,12 @@
 
   {{- $appSource := .source }}
   {{- if not $appSource }}
+    {{if not .sources}}
     {{- $appSource = $.Values.spec.source }}
     {{ if $appSource.path }}
     {{- $path := printf "%s/%s" $appSource.path .name }}
     {{- $appSource = merge $appSource (dict "path" $path) }}
+    {{- end }}
     {{- end }}
   {{- else }}
     {{- range $key, $value := $.Values.spec.source }}
