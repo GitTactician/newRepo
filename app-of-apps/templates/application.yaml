@@ -86,7 +86,7 @@ spec:
   project: {{ $project }}
   destination:
     server: {{ $destinationServer }}
-    namespace: {{ $metadata.namespace }}
+    namespace: {{ .namespace }}
   source:
     {{- range $key, $value := $appSource }}
     {{- if kindIs "map" $value }}
