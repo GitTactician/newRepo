@@ -50,6 +50,16 @@
     {{- end }}
   {{- end }}
 
+  {{- if not $sources }}
+    {{- if not $appSource.targetRevision }}
+    {{ $appSource = merge $appSource (dict "targetRevision" "main") }}
+    {{- end }}
+    {{- if not $appSource.path }}
+    {{ $path:= "apps/%s" $appSource.path .name}}
+    {{- $appSource = merge $appSource (dict "path" $path) }}
+    {{- end }}
+  {{- end }}
+
   {{- $appSyncPolicy := .syncPolicy }}
   {{- if not $appSyncPolicy }}
     {{- $appSyncPolicy = $.Values.spec.syncPolicy }}
