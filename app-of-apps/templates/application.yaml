@@ -69,63 +69,41 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   {{- range $key, $value := $metadata }}
-  {{- if not (kindIs "map" $value) }}
-  {{ $key }}: {{ $value }}
-  {{- else }}
+  {{- if kindIs "map" $value }}
   {{ $key }}:
     {{- range $nestedKey, $nestedValue := $value }}
-    {{- if not (kindIs "map" $value) }}
-    {{ $key }}: {{ $value }}
-    {{- else }}
-    {{ $key }}:
-      {{- range $nestedKey, $nestedValue := $value }}
-      {{ $nestedKey }}: {{ $nestedValue }}
-      {{- end }}
+    {{ $nestedKey }}: {{ $nestedValue }}
     {{- end }}
-    {{- end }}
+  {{- else }}
+  {{ $key }}: {{ $value }}
   {{- end }}
   {{- end }}
 spec:
   project: {{ $project }}
   destination:
     server: {{ $destinationServer }}
-    namespace: {{ .namespace }}
+    namespace: {{ $metadata.namespace }}
   source:
-    {{- range $key1, $value1 := $appSource }}
-    {{- if not (kindIs "map" $value1) }}
-    {{ $key1 }}: {{ $value1 }}
+    {{- range $key, $value := $appSource }}
+    {{- if kindIs "map" $value }}
+    {{ $key }}:
+      {{- range $nestedKey, $nestedValue := $value }}
+      {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
     {{- else }}
-    {{ $key1 }}:
-      {{- range $nestedKey1, $nestedValue1 := $value1 }}
-      {{- if not (kindIs "map" $value1) }}
-      {{ $key1 }}: {{ $value1 }}
-      {{- else }}
-      {{ $key1 }}:
-        {{- range $nestedKey1, $nestedValue1 := $value1 }}
-        {{ $nestedKey1 }}: {{ $nestedValue1 }}
-        {{- end }}
-      {{- end }}
-      {{- end }}
+    {{ $key }}: {{ $value }}
     {{- end }}
     {{- end }}
   {{- if $appSyncPolicy }}
   syncPolicy:
-    {{- range $key2, $value2 := $appSyncPolicy }}
-    {{- if not (kindIs "map" $value2) }}
-    {{ $key2 }}: {{ $value2 }}
+    {{- range $key, $value := $appSyncPolicy }}
+    {{- if kindIs "map" $value }}
+    {{ $key }}:
+      {{- range $nestedKey, $nestedValue := $value }}
+      {{ $nestedKey }}: {{ $nestedValue }}
+      {{- end }}
     {{- else }}
-    {{ $key2 }}:
-      {{- range $nestedKey2, $nestedValue2 := $value2 }}
-      {{- if not (kindIs "map" $value2) }}
-      {{ $key2 }}: {{ $value2 }}
-      {{- else }}
-      {{ $key2 }}:
-        {{- range $nestedKey2, $nestedValue2 := $value2 }}
-        {{ $nestedKey2 }}: {{ $nestedValue2 }}
-        {{- end }}
-      {{- end }}
-      {{- end }}
-      {{- end }}
+    {{ $key }}: {{ $value }}
     {{- end }}
     {{- end }}
   {{- end }}
