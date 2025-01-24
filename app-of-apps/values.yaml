@@ -15,12 +15,6 @@ spec:
 applications:
   - name: sealed-secrets
     namespace: kube-system
-    metadata:
-      labels:
-        app.kubernetes.io/managed-by: argocd
-      annotations:
-        # this annotation ades wave priority 2
-        argocd.argoproj.io/sync-wave: "1"
     source:
       repoURL: https://github.com/GitTactician/newRepo.git
       targetRevision: main
@@ -34,12 +28,6 @@ applications:
 
   - name: cert-manager
     namespace: cert-manager
-    metadata:
-      labels:
-        app.kubernetes.io/managed-by: argocd
-      annotations:
-        # this annotation ades wave priority 2
-        argocd.argoproj.io/sync-wave: "0"
     source:
       repoURL: https://github.com/GitTactician/app-of-apps.git
       targetRevision: main
