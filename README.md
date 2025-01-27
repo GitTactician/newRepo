@@ -52,122 +52,172 @@ Directory structure:
 
 ## How It Works
 
-### Helm Chart
+# ArgoCD Helm Chart with App-of-Apps Pattern
 
-The main Helm chart is located in the `app-of-apps/` directory and includes:
+This Helm chart is designed to automate the creation and management of ArgoCD applications using the "App-of-Apps" pattern. It allows for centralized management of multiple applications with a global configuration that can be overridden at the application level.
 
-- `Chart.yaml`: Metadata for the chart.
-- `values.yaml`: Configuration values for the applications to be deployed.
-- `templates/`: Contains the template for generating ArgoCD Application resources (`application.yaml`).
+## Features
 
-### Application Template (`application.yaml`)
+- Centralized global defaults for common configurations.
+- Per-application overrides for fine-grained control.
+- Automated configuration of application `spec` fields such as `source`, `destination`, `syncPolicy`, `metadata`, and more.
+- Support for multiple sources in a single application.
+- Fallback mechanism for default values when specific values are not provided.
+- Flexible configuration via `values.yaml`.
 
-This Helm template generates ArgoCD `Application` resources based on the `values.yaml` file. It supports global and per-application overrides for critical parameters such as:
+## Default Fields
 
-- `project`: Project name.
-- `repoURL`: Repository URL for the application source.
-- `targetRevision`: Branch, tag, or commit to deploy.
-- `syncPolicy`: Configures automatic synchronization (optional).
-- `prune`: Controls pruning of out-of-sync resources (optional).
-- `selfHeal`: Enables automatic self-healing of resources (optional).
-- `createNamespace`: Automatically creates namespaces for applications (optional).
-- `destinationServer`: Kubernetes API server address specific to the application.
+### Global Defaults
 
-### Parameters in `values.yaml`
+The following fields are defined globally in `values.yaml` and apply to all applications unless overridden at the application level:
 
-The `values.yaml` file defines the global and application-specific configurations.
+- **destination**: Specifies the target cluster and namespace.
+  - Default:
+    ```yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    ```
+- **source**: Defines the repository and path for application manifests.
+  - Default:
+    ```yaml
+    source:
+      repoURL: "https://example.com/repo.git"
+      targetRevision: "main"
+      path: "apps"
+    ```
+- **syncPolicy**: Controls the synchronization behavior of applications.
+  - Default:
+    ```yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+    ```
+- **metadata**: Provides default metadata for applications.
+  - Default:
+    ```yaml
+    metadata:
+      namespace: argocd
+    ```
+- **ignoreDifferences**: Specifies resource fields to ignore during diffing.
+  - Default: None (optional field).
 
-#### Global Configuration
+### Application-Level Overrides
 
-The following parameters apply globally unless overridden at the application level. Defaults are applied in the `application.yaml` template if not explicitly set:
+Each application defined in the `applications` section of `values.yaml` can override the global defaults. Overrides apply only to the specific application and take precedence over global settings.
 
-- `spec.destination.server` (Required): Specifies the Kubernetes API server address.
-- `spec.source.repoURL` (Required): Default Git repository URL.
-- `spec.source.targetRevision` (Optional): Default branch, tag, or commit to deploy. Defaults to `main`.
-- `spec.source.project` (optional): Default `default` project.
-- `syncPolicy` (Optional): Enables global synchronization policy. Defaults to `false`.
-- `prune` (Optional): Default pruning setting. Defaults to `true`.
-- `selfHeal` (Optional): Default self-healing setting. Defaults to `true`.
-- `createNamespace` (Optional): Default namespace creation setting. Defaults to `false`.
+#### Example Application-Specific Overrides:
 
-#### Application-Specific Configuration
+```yaml
+applications:
+  - name: example-app
+    namespace: custom-namespace
+    destination:
+      server: https://custom-cluster.svc
+      namespace: custom-namespace
+    source:
+      repoURL: "https://custom-repo.com/app.git"
+      path: "custom/path"
+      targetRevision: "develop"
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: true
+    metadata:
+      annotations:
+        custom-annotation: "value"
+    ignoreDifferences:
+      - group: "apps"
+        kind: "Deployment"
+        jsonPointers:
+          - "/spec/replicas"
+```
 
-Each application can override the global configuration using the following parameters:
+## Fallback Mechanism
 
-- `name` (Required): Unique name for the application.
-- `namespace` (Required): Target namespace for the application.
-- `repoURL` (Optional): Application-specific repository URL. Overrides `spec.source.repoURL`.
-- `targetRevision` (Optional): Application-specific branch, tag, or commit. Overrides `spec.source.targetRevision`.
-- `project` (optional): Application-specific project. Overrides global `spec.source.project`.
-- `syncPolicy` (Optional): Application-specific sync policy. Overrides global `syncPolicy`.
-- `prune` (Optional): Application-specific pruning. Overrides global `prune`.
-- `selfHeal` (Optional): Application-specific self-healing. Overrides global `selfHeal`.
-- `createNamespace` (Optional): Application-specific namespace creation. Overrides global `createNamespace`.
-- `destinationServer` (Optional): Application-specific Kubernetes API server. Overrides `spec.destination.server`.
+The chart employs a two-stage fallback mechanism for default values:
 
-### Example `values.yaml`
+1. **Application-Level Check**: If a field is specified for an application, its value is used.
+2. **Global Default Check**: If a field is not specified for an application, the corresponding global default value is used. If no global default exists, the field remains unset (if optional) or triggers an error (if required).
+
+### Example
+
+Given the following `values.yaml`:
+
+```yaml
+spec:
+  destination:
+    server: https://global-cluster.svc
+    namespace: global-namespace
+  source:
+    repoURL: "https://global-repo.com/repo.git"
+    targetRevision: "main"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  metadata:
+    namespace: global-namespace
+
+applications:
+  - name: app1
+    namespace: app1-namespace
+    source:
+      path: "app1/path"
+  - name: app2
+    destination:
+      namespace: app2-namespace
+```
+
+- **`app1`**:
+
+  - `destination.server`: Fallback to global (`https://global-cluster.svc`).
+  - `destination.namespace`: Use application-specific (`app1-namespace`).
+  - `source.path`: Use application-specific (`app1/path`).
+  - `source.repoURL` and `targetRevision`: Fallback to global.
+  - `syncPolicy` and `metadata`: Fallback to global.
+
+- **`app2`**:
+  - `destination.server`: Fallback to global (`https://global-cluster.svc`).
+  - `destination.namespace`: Use application-specific (`app2-namespace`).
+  - `source`: Fully fallback to global.
+  - `syncPolicy` and `metadata`: Fallback to global.
+
+## Example `values.yaml`
 
 ```yaml
 spec:
   destination:
     server: https://kubernetes.default.svc
+    namespace: default
   source:
-    repoURL: https://github.com/GitTactician/app-of-apps
-    targetRevision: main
-
-  # Global syncPolicy and namespace creation settings (optional)
-  syncPolicy: false
-  prune: true
-  selfHeal: true
-  createNamespace: false
+    repoURL: "https://github.com/example/repo.git"
+    targetRevision: "main"
+    path: "apps"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  metadata:
+    namespace: argocd
 
 applications:
-  - name: sealed-secrets
-    namespace: kube-system
-    syncPolicy: true # Override global syncPolicy
-
-  - name: nginx
-    namespace: ingress-nginx
-    repoURL: https://github.com/example/nginx-repo
-    syncPolicy: true
-    prune: false
-    createNamespace: true
-
-  - name: cert-manager
-    namespace: cert-manager
-
-  - name: apache-httpd
-    namespace: apache-httpd
-    prune: true
-    selfHeal: true
-    createNamespace: true
-
-  - name: metrics-server
-    namespace: kube-system
-    repoURL: https://github.com/example/metrics-repo
-
-  - name: strimzi-kafka-operator
-    namespace: kafka
-    repoURL: https://github.com/example/strimzi-repo
-    appPath: helm/strimzi
-    targetRevision: master
-    syncPolicy: true
-    prune: false
-    createNamespace: true
-    destinationServer: https://custom-api-server.example.com
+  - name: app1
+    namespace: custom-namespace
+    source:
+      path: "custom/path"
+  - name: app2
+    destination:
+      namespace: another-namespace
+  - name: app3
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: true
 ```
 
-### Key Points
-
-- Applications inherit global settings unless overridden.
-- The `destinationServer`, if specified for an application, overrides the global server.
-- The `syncPolicy` can be configured globally or per application.
-- Defaults applied in the `application.yaml` template include:
-  - `spec.source.targetRevision`: Defaults to `main`.
-  - `syncPolicy`: Defaults to `false`.
-  - `prune`: Defaults to `false`.
-  - `selfHeal`: Defaults to `false`.
-  - `createNamespace`: Defaults to `false`.
+This setup ensures consistency across applications while allowing for customization as needed.
 
 ## Usage
 
